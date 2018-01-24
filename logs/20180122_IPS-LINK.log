@@ -1,0 +1,1060 @@
+=====================Start------of-------Log==================
+TRACE-> 2018-01-22 11:43:59,635 core.tcp.TcpServerActor - starting TCP Server
+TRACE-> 2018-01-22 11:43:59,672 core.tcp.TcpServerActor - Server Status: Bound(/192.168.0.181:40001)
+TRACE-> 2018-01-22 11:46:21,811 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64309,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:47:21,496 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 11:47:21,794 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 11:47:21,795 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 11:47:21,796 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 11:47:21,802 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 11:47:21,802 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 11:47:21,802 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 11:47:21,819 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 11:47:21,826 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 11:47:21,837 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 11:47:21,842 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 11:47:21,842 core.tcp.TcpClientActor - starting handler
+TRACE-> 2018-01-22 11:47:21,842 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 11:47:21,860 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 11:47:21,903 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64318)
+INFO -> 2018-01-22 11:47:21,910 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 11:47:22,353 app_main.IPS_Link - received DLL REQUEST-> sending ACK
+INFO -> 2018-01-22 11:47:22,353 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64309 : b
+INFO -> 2018-01-22 11:47:22,355 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 11:47:22,424 app_main.IPS_Link - Starting "DLL FUNCTION" with flag: 1
+INFO -> 2018-01-22 11:47:22,425 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 11:47:22,427 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+ERROR-> 2018-01-22 11:47:22,430 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+DEBUG-> 2018-01-22 11:47:22,432 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 11:47:22,458 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:47:22,459 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:47:22,460 core.tcp.TcpClientActor - sent Application msg: at cycle: 114 -> 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:47:22,558 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:47:22,566 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:47:22,606 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 11:47:22,607 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 11:47:22,609 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64309
+INFO -> 2018-01-22 11:47:23,010 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 11:47:23,010 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 11:47:23,013 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64309
+INFO -> 2018-01-22 11:47:45,555 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 11:47:45,557 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 11:47:45,558 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64309
+INFO -> 2018-01-22 11:47:46,580 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:46,581 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:46,582 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:46,582 protocol37.Protocol37ReadWriteHandler - Result: 100000340D0000000100002202211470000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:47:46,582 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:46,628 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:46,631 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:46,631 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:46,634 protocol37.Protocol37ReadWriteHandler - Result: 100000340S     DLL PARAMETERS          Dhanapal TEST               Slough                                 Date 22/01/18 Time 11:47TML 10000034 STAN 000001CAUSA
+INFO -> 2018-01-22 11:47:46,634 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:46,724 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:46,725 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:46,725 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:46,725 protocol37.Protocol37ReadWriteHandler - Result: 100000340SL  860 N.OP. 000021Authenticat. -Phase1  OKConferm. Keys-Phase2  OKConferment   PKCA     OKConferment   PAR.TEC  OKConferment   PAR.ACQ  OK           
+INFO -> 2018-01-22 11:47:46,726 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:46,989 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:46,989 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:46,989 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:46,990 protocol37.Protocol37ReadWriteHandler - Result: 100000340S                  CARDS HANDLED      Elavon                                            OPERATION SUCCEEDED                                  ATTENTION
+INFO -> 2018-01-22 11:47:46,990 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:46,997 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:46,997 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:46,998 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:46,999 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:46,998 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        We inform you that      the following new cards are enabled on your POS                         ========================Elavon                
+INFO -> 2018-01-22 11:47:47,098 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:47:47,098 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:47:47,099 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:47:47,099 protocol37.Protocol37ReadWriteHandler - Result: 100000340S  ========================}}
+INFO -> 2018-01-22 11:47:47,099 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:47:47,101 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 11:47:47,102 protocol37.ReceiptGenerator - 10000034;OK;Successful;0221147
+     DLL PARAMETERS     
+     Dhanapal TEST      
+         Slough         
+                        
+Date 22/01/18 Time 11:47
+TML 10000034 STAN 000001
+CAUSAL  860 N.OP. 000021
+Authenticat. -Phase1  OK
+Conferm. Keys-Phase2  OK
+Conferment   PKCA     OK
+Conferment   PAR.TEC  OK
+Conferment   PAR.ACQ  OK
+                        
+     CARDS HANDLED      
+Elavon                  
+                        
+  OPERATION SUCCEEDED   
+                        
+       ATTENTION        
+We inform you that      
+the following new cards 
+are enabled on your POS 
+                        
+========================
+Elavon                  
+========================
+;
+INFO -> 2018-01-22 11:47:47,102 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64309
+TRACE-> 2018-01-22 11:47:47,103 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 11:47:47,127 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 11:47:47,129 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 11:47:47,131 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 11:47:47,134 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+FATAL-> 2018-01-22 11:49:22,126 core.tcp.TcpConnectionHandlerActor - TIMEOUT EXCEEDED KILLING ALL
+TRACE-> 2018-01-22 11:49:22,139 core.tcp.TcpConnectionHandlerActor - turning off TIMER
+DEBUG-> 2018-01-22 11:49:31,190 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 11:54:12,253 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64380,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:54:12,255 core.tcp.TcpConnectionHandlerActor - received-tcp:  ?{"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+ERROR-> 2018-01-22 11:54:12,256 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:54:12,256 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:54:12,256 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64380 : q
+TRACE-> 2018-01-22 11:55:04,706 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64386,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:55:04,707 core.tcp.TcpConnectionHandlerActor - received-tcp:  ?{"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+ERROR-> 2018-01-22 11:55:04,707 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:55:04,708 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:55:04,708 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64386 : q
+TRACE-> 2018-01-22 11:55:30,881 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64390,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:55:30,882 core.tcp.TcpConnectionHandlerActor - received-tcp:  ?[{"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}]
+ERROR-> 2018-01-22 11:55:30,883 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:55:30,883 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:55:30,883 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64390 : q
+TRACE-> 2018-01-22 11:56:54,425 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64402,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:56:54,427 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminal
+ERROR-> 2018-01-22 11:56:54,428 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,428 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,428 core.tcp.TcpConnectionHandlerActor - received-tcp: Port":"4
+ERROR-> 2018-01-22 11:56:54,429 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,429 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,430 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,430 core.tcp.TcpConnectionHandlerActor - received-tcp: 0001","G
+ERROR-> 2018-01-22 11:56:54,431 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,432 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,433 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,434 core.tcp.TcpConnectionHandlerActor - received-tcp: T
+ERROR-> 2018-01-22 11:56:54,434 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,434 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,434 core.tcp.TcpConnectionHandlerActor - received-tcp: m
+ERROR-> 2018-01-22 11:56:54,440 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,441 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,442 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,442 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,443 core.tcp.TcpConnectionHandlerActor - received-tcp: e
+ERROR-> 2018-01-22 11:56:54,443 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,443 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,444 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,444 core.tcp.TcpConnectionHandlerActor - received-tcp: s
+ERROR-> 2018-01-22 11:56:54,445 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,445 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,445 core.tcp.TcpConnectionHandlerActor - received-tcp: s
+ERROR-> 2018-01-22 11:56:54,445 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,446 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,446 core.tcp.TcpConnectionHandlerActor - received-tcp: age":nul
+ERROR-> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - received-tcp: l
+ERROR-> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,447 core.tcp.TcpConnectionHandlerActor - received-tcp: }
+ERROR-> 2018-01-22 11:56:54,448 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:56:54,448 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:56:54,448 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,448 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,448 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,449 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,450 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+INFO -> 2018-01-22 11:56:54,450 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64402 : q
+TRACE-> 2018-01-22 11:57:07,431 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64403,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:57:07,446 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalI
+ERROR-> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - received-tcp: p":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+ERROR-> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:07,451 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64403 : q
+INFO -> 2018-01-22 11:57:07,452 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64403 : q
+DEBUG-> 2018-01-22 11:57:26,361 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+DEBUG-> 2018-01-22 11:57:29,501 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+DEBUG-> 2018-01-22 11:57:31,133 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+DEBUG-> 2018-01-22 11:57:33,038 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+DEBUG-> 2018-01-22 11:57:35,228 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 11:57:47,200 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64409,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:57:47,201 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp"
+ERROR-> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - received-tcp: :nu
+ERROR-> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - received-tcp: ll,"G
+ERROR-> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - received-tcp: Tbit":n
+ERROR-> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,202 core.tcp.TcpConnectionHandlerActor - received-tcp: ull,"
+ERROR-> 2018-01-22 11:57:47,207 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,207 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,207 core.tcp.TcpConnectionHandlerActor - received-tcp: stat
+ERROR-> 2018-01-22 11:57:47,207 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,207 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - received-tcp: us
+ERROR-> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - received-tcp: Mess
+ERROR-> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,214 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,215 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,215 core.tcp.TcpConnectionHandlerActor - received-tcp: a
+ERROR-> 2018-01-22 11:57:47,215 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,215 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,216 core.tcp.TcpConnectionHandlerActor - received-tcp: geP
+ERROR-> 2018-01-22 11:57:47,216 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,216 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,216 core.tcp.TcpConnectionHandlerActor - received-tcp: o
+ERROR-> 2018-01-22 11:57:47,216 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,217 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,218 core.tcp.TcpConnectionHandlerActor - received-tcp: r
+ERROR-> 2018-01-22 11:57:47,218 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,218 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,222 core.tcp.TcpConnectionHandlerActor - received-tcp: t
+ERROR-> 2018-01-22 11:57:47,222 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,222 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,222 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - received-tcp: "
+ERROR-> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - received-tcp: :
+ERROR-> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - received-tcp: n
+ERROR-> 2018-01-22 11:57:47,223 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - received-tcp: u
+ERROR-> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,229 core.tcp.TcpConnectionHandlerActor - received-tcp: l
+ERROR-> 2018-01-22 11:57:47,230 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,230 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - received-tcp: l,"ter
+ERROR-> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - received-tcp: minalPort":"4000
+ERROR-> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - received-tcp: 1
+ERROR-> 2018-01-22 11:57:47,231 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,239 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - received-tcp: "
+ERROR-> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - received-tcp: ,"GTmes
+ERROR-> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - received-tcp: sage
+ERROR-> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,240 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,256 core.tcp.TcpConnectionHandlerActor - received-tcp: ":null}
+ERROR-> 2018-01-22 11:57:47,263 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST..!
+INFO -> 2018-01-22 11:57:47,263 core.tcp.TcpConnectionHandlerActor - UNKNOWN REQUEST-> sending NACK
+INFO -> 2018-01-22 11:57:47,264 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,264 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,265 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,266 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,266 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,267 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,268 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,268 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,269 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,269 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,270 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,271 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,271 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,272 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,272 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,273 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,273 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,273 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,274 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+INFO -> 2018-01-22 11:57:47,274 core.tcp.TcpConnectionHandlerActor - sending out NACK to /192.168.0.181:64409 : q
+DEBUG-> 2018-01-22 11:57:50,803 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 11:58:23,153 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64421,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:58:23,158 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 11:58:23,162 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 11:58:23,162 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 11:58:23,162 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 11:58:23,163 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 11:58:23,164 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 11:58:23,164 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 11:58:23,165 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 11:58:23,165 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 11:58:23,166 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 11:58:23,166 app_main.IPS_Link - Starting IPS_LINK ACTOR
+TRACE-> 2018-01-22 11:58:23,166 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 11:58:23,166 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 11:58:23,166 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 11:58:23,200 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64422)
+INFO -> 2018-01-22 11:58:23,201 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 11:58:23,671 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64421 : b
+INFO -> 2018-01-22 11:58:23,671 app_main.IPS_Link - received DLL REQUEST-> sending ACK
+INFO -> 2018-01-22 11:58:23,673 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 11:58:23,677 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 11:58:23,676 app_main.IPS_Link - Starting "DLL FUNCTION" with flag: 1
+INFO -> 2018-01-22 11:58:23,679 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+ERROR-> 2018-01-22 11:58:23,680 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+DEBUG-> 2018-01-22 11:58:23,682 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 11:58:23,771 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:58:23,771 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:58:23,772 core.tcp.TcpClientActor - sent Application msg: at cycle: 2159 -> 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:58:23,889 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:58:23,890 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:58:23,924 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 11:58:23,924 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 11:58:23,926 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64421
+INFO -> 2018-01-22 11:58:24,425 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 11:58:24,426 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 11:58:24,428 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64421
+INFO -> 2018-01-22 11:58:48,078 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 11:58:48,080 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 11:58:48,082 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64421
+INFO -> 2018-01-22 11:58:49,102 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,102 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,103 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,104 protocol37.Protocol37ReadWriteHandler - Result: 100000340D0000000100002202211580000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:58:49,104 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,116 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,118 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,119 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,119 protocol37.Protocol37ReadWriteHandler - Result: 100000340S     DLL PARAMETERS          Dhanapal TEST               Slough                                 Date 22/01/18 Time 11:58TML 10000034 STAN 000001CAUSA
+INFO -> 2018-01-22 11:58:49,119 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,216 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,217 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,218 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,218 protocol37.Protocol37ReadWriteHandler - Result: 100000340SL  860 N.OP. 000021Authenticat. -Phase1  OKConferm. Keys-Phase2  OKConferment   PKCA     OKConferment   PAR.TEC  OKConferment   PAR.ACQ  OK           
+INFO -> 2018-01-22 11:58:49,218 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,409 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,410 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,410 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,411 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,411 protocol37.Protocol37ReadWriteHandler - Result: 100000340S                  CARDS HANDLED      Elavon                                            OPERATION SUCCEEDED                                  ATTENTION
+INFO -> 2018-01-22 11:58:49,456 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,457 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,458 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,459 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        We inform you that      the following new cards are enabled on your POS                         ========================Elavon                
+INFO -> 2018-01-22 11:58:49,459 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,556 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:58:49,557 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:58:49,558 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:58:49,559 protocol37.Protocol37ReadWriteHandler - Result: 100000340S  ========================}}
+INFO -> 2018-01-22 11:58:49,559 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:58:49,561 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 11:58:49,562 protocol37.ReceiptGenerator - 10000034;OK;Successful;0221158
+     DLL PARAMETERS     
+     Dhanapal TEST      
+         Slough         
+                        
+Date 22/01/18 Time 11:58
+TML 10000034 STAN 000001
+CAUSAL  860 N.OP. 000021
+Authenticat. -Phase1  OK
+Conferm. Keys-Phase2  OK
+Conferment   PKCA     OK
+Conferment   PAR.TEC  OK
+Conferment   PAR.ACQ  OK
+                        
+     CARDS HANDLED      
+Elavon                  
+                        
+  OPERATION SUCCEEDED   
+                        
+       ATTENTION        
+We inform you that      
+the following new cards 
+are enabled on your POS 
+                        
+========================
+Elavon                  
+========================
+;
+INFO -> 2018-01-22 11:58:49,564 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64421
+TRACE-> 2018-01-22 11:58:49,565 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+TRACE-> 2018-01-22 11:58:49,567 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 11:58:49,567 protocol37.ReceiptGenerator - stopping Receipt Generator
+INFO -> 2018-01-22 11:58:49,583 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 11:58:49,584 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+DEBUG-> 2018-01-22 11:58:55,011 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 11:59:23,068 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64436,/192.168.0.181:40001)
+INFO -> 2018-01-22 11:59:23,069 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"statusMessagePort":null,"terminalPort":"40001"}
+TRACE-> 2018-01-22 11:59:23,081 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 11:59:23,083 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 11:59:23,084 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+TRACE-> 2018-01-22 11:59:23,084 app_main.IPS_Link - =============================START---OF---LOG================================
+DEBUG-> 2018-01-22 11:59:23,084 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+INFO -> 2018-01-22 11:59:23,085 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 11:59:23,086 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 11:59:23,086 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 11:59:23,087 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 11:59:23,090 core.tcp.TcpClientActor - starting TCP Client
+TRACE-> 2018-01-22 11:59:23,090 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 11:59:23,091 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 11:59:23,093 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 11:59:23,097 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64437)
+INFO -> 2018-01-22 11:59:23,097 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 11:59:23,605 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64436 : b
+INFO -> 2018-01-22 11:59:23,605 app_main.IPS_Link - received DLL REQUEST-> sending ACK
+INFO -> 2018-01-22 11:59:23,607 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 11:59:23,609 app_main.IPS_Link - Starting "DLL FUNCTION" with flag: 1
+INFO -> 2018-01-22 11:59:23,610 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 11:59:23,612 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+ERROR-> 2018-01-22 11:59:23,613 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+DEBUG-> 2018-01-22 11:59:23,615 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 11:59:23,693 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:59:23,693 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:59:23,693 core.tcp.TcpClientActor - sent Application msg: at cycle: 3075 -> 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:59:23,790 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 11:59:23,798 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 11:59:23,849 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 11:59:23,850 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 11:59:23,851 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64436
+INFO -> 2018-01-22 11:59:24,239 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 11:59:24,239 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 11:59:24,240 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64436
+INFO -> 2018-01-22 11:59:47,675 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 11:59:47,676 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 11:59:47,676 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64436
+INFO -> 2018-01-22 11:59:48,596 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:48,597 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:48,598 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:48,599 protocol37.Protocol37ReadWriteHandler - Result: 100000340D0000000100002202211590000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 11:59:48,599 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:48,669 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:48,669 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:48,670 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:48,671 protocol37.Protocol37ReadWriteHandler - Result: 100000340S     DLL PARAMETERS          Dhanapal TEST               Slough                                 Date 22/01/18 Time 11:59TML 10000034 STAN 000001CAUSA
+INFO -> 2018-01-22 11:59:48,671 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:48,769 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:48,773 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:48,773 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:48,773 protocol37.Protocol37ReadWriteHandler - Result: 100000340SL  860 N.OP. 000021Authenticat. -Phase1  OKConferm. Keys-Phase2  OKConferment   PKCA     OKConferment   PAR.TEC  OKConferment   PAR.ACQ  OK           
+INFO -> 2018-01-22 11:59:48,773 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:48,929 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:48,930 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:48,930 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:48,931 protocol37.Protocol37ReadWriteHandler - Result: 100000340S                  CARDS HANDLED      Elavon                                            OPERATION SUCCEEDED                                  ATTENTION
+INFO -> 2018-01-22 11:59:48,931 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:49,017 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:49,018 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:49,018 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:49,018 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        We inform you that      the following new cards are enabled on your POS                         ========================Elavon                
+INFO -> 2018-01-22 11:59:49,018 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:49,120 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 11:59:49,121 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 11:59:49,121 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 11:59:49,122 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 11:59:49,122 protocol37.Protocol37ReadWriteHandler - Result: 100000340S  ========================}}
+INFO -> 2018-01-22 11:59:49,123 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 11:59:49,123 protocol37.ReceiptGenerator - 10000034;OK;Successful;0221159
+     DLL PARAMETERS     
+     Dhanapal TEST      
+         Slough         
+                        
+Date 22/01/18 Time 11:59
+TML 10000034 STAN 000001
+CAUSAL  860 N.OP. 000021
+Authenticat. -Phase1  OK
+Conferm. Keys-Phase2  OK
+Conferment   PKCA     OK
+Conferment   PAR.TEC  OK
+Conferment   PAR.ACQ  OK
+                        
+     CARDS HANDLED      
+Elavon                  
+                        
+  OPERATION SUCCEEDED   
+                        
+       ATTENTION        
+We inform you that      
+the following new cards 
+are enabled on your POS 
+                        
+========================
+Elavon                  
+========================
+;
+INFO -> 2018-01-22 11:59:49,125 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64436
+TRACE-> 2018-01-22 11:59:49,126 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 11:59:49,130 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 11:59:49,130 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 11:59:49,130 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 11:59:49,130 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+DEBUG-> 2018-01-22 12:00:16,173 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 12:00:41,335 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64445,/192.168.0.181:40001)
+INFO -> 2018-01-22 12:00:41,337 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","terminalIp":"192.168.0.137","terminalPort":"40001"}
+TRACE-> 2018-01-22 12:00:41,338 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:00:41,338 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:00:41,338 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:00:41,339 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:00:41,339 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:00:41,340 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:00:41,340 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:00:41,341 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 12:00:41,341 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:00:41,342 core.tcp.TcpClientActor - starting TCP Client
+TRACE-> 2018-01-22 12:00:41,342 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 12:00:41,342 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:00:41,343 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:00:41,845 app_main.IPS_Link - received DLL REQUEST-> sending ACK
+INFO -> 2018-01-22 12:00:41,845 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64445 : b
+INFO -> 2018-01-22 12:00:41,846 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 12:00:41,846 app_main.IPS_Link - Starting "DLL FUNCTION" with flag: 1
+INFO -> 2018-01-22 12:00:42,052 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64446)
+INFO -> 2018-01-22 12:00:42,053 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+DEBUG-> 2018-01-22 12:00:56,959 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 12:00:56,962 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:00:56,962 protocol37.ReceiptGenerator - stopping Receipt Generator
+INFO -> 2018-01-22 12:00:56,962 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 12:00:56,962 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+TRACE-> 2018-01-22 12:01:05,463 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64449,/192.168.0.181:40001)
+INFO -> 2018-01-22 12:01:05,467 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"D","terminalIp":"192.168.0.137","terminalPort":"40001"}
+TRACE-> 2018-01-22 12:01:05,470 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:01:05,470 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:01:05,471 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:01:05,472 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:01:05,472 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:01:05,473 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:01:05,473 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:01:05,474 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 12:01:05,474 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:01:05,474 app_main.IPS_Link - Starting IPS_LINK ACTOR
+TRACE-> 2018-01-22 12:01:05,474 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:01:05,475 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:01:05,475 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:01:05,485 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64450)
+INFO -> 2018-01-22 12:01:05,486 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:01:05,983 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64449 : b
+INFO -> 2018-01-22 12:01:05,983 app_main.IPS_Link - received DLL REQUEST-> sending ACK
+INFO -> 2018-01-22 12:01:05,984 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 12:01:05,984 app_main.IPS_Link - Starting "DLL FUNCTION" with flag: 1
+INFO -> 2018-01-22 12:01:05,984 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 12:01:05,988 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+ERROR-> 2018-01-22 12:01:05,988 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+DEBUG-> 2018-01-22 12:01:05,989 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 12:01:06,113 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:01:06,114 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:01:06,114 core.tcp.TcpClientActor - sent Application msg: at cycle: 15267 -> 000000000D00000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 12:01:06,204 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:01:06,204 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:01:06,240 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 12:01:06,240 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 12:01:06,242 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64449
+INFO -> 2018-01-22 12:01:06,727 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 12:01:06,729 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 12:01:06,730 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64449
+INFO -> 2018-01-22 12:01:31,098 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 12:01:31,099 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 12:01:31,099 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64449
+INFO -> 2018-01-22 12:01:32,122 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,123 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,124 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,125 protocol37.Protocol37ReadWriteHandler - Result: 100000340D0000000100002202212010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+INFO -> 2018-01-22 12:01:32,125 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,217 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,223 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,223 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,225 protocol37.Protocol37ReadWriteHandler - Result: 100000340S     DLL PARAMETERS          Dhanapal TEST               Slough                                 Date 22/01/18 Time 12:01TML 10000034 STAN 000001CAUSA
+INFO -> 2018-01-22 12:01:32,225 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,429 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,430 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,431 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,431 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,431 protocol37.Protocol37ReadWriteHandler - Result: 100000340SL  860 N.OP. 000021Authenticat. -Phase1  OKConferm. Keys-Phase2  OKConferment   PKCA     OKConferment   PAR.TEC  OKConferment   PAR.ACQ  OK           
+INFO -> 2018-01-22 12:01:32,473 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,473 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,473 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,474 protocol37.Protocol37ReadWriteHandler - Result: 100000340S                  CARDS HANDLED      Elavon                                            OPERATION SUCCEEDED                                  ATTENTION
+INFO -> 2018-01-22 12:01:32,474 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,572 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,572 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,573 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,573 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        We inform you that      the following new cards are enabled on your POS                         ========================Elavon                
+INFO -> 2018-01-22 12:01:32,573 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,673 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:01:32,673 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:01:32,674 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:01:32,674 protocol37.Protocol37ReadWriteHandler - Result: 100000340S  ========================}}
+INFO -> 2018-01-22 12:01:32,674 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:01:32,676 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:01:32,677 protocol37.ReceiptGenerator - 10000034;OK;Successful;0221201
+     DLL PARAMETERS     
+     Dhanapal TEST      
+         Slough         
+                        
+Date 22/01/18 Time 12:01
+TML 10000034 STAN 000001
+CAUSAL  860 N.OP. 000021
+Authenticat. -Phase1  OK
+Conferm. Keys-Phase2  OK
+Conferment   PKCA     OK
+Conferment   PAR.TEC  OK
+Conferment   PAR.ACQ  OK
+                        
+     CARDS HANDLED      
+Elavon                  
+                        
+  OPERATION SUCCEEDED   
+                        
+       ATTENTION        
+We inform you that      
+the following new cards 
+are enabled on your POS 
+                        
+========================
+Elavon                  
+========================
+;
+INFO -> 2018-01-22 12:01:32,678 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64449
+INFO -> 2018-01-22 12:01:32,683 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 12:01:32,680 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+TRACE-> 2018-01-22 12:01:32,716 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:01:32,718 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 12:01:32,722 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+DEBUG-> 2018-01-22 12:01:37,913 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 12:10:54,768 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64518,/192.168.0.181:40001)
+INFO -> 2018-01-22 12:10:56,678 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"R","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 12:10:56,682 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:10:56,682 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:10:56,682 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:10:56,684 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:10:56,684 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:10:56,685 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:10:56,685 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:10:56,685 core.StatusMessageSender - starting StatusMessageSender Actor
+TRACE-> 2018-01-22 12:10:56,685 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 12:10:56,685 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:10:56,685 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:10:56,685 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:10:56,685 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:10:56,753 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64519)
+INFO -> 2018-01-22 12:10:56,753 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:10:57,187 app_main.IPS_Link - received REPRINT TICKET REQUEST-> sending ACK
+INFO -> 2018-01-22 12:10:57,187 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64518 : b
+INFO -> 2018-01-22 12:10:57,187 app_main.IPS_Link - Starting print receipt funtion
+INFO -> 2018-01-22 12:10:57,188 core.tcp.TcpClientActor - sent Application msg: at cycle: 0 -> 000000000R100-
+INFO -> 2018-01-22 12:10:57,197 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:10:57,198 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:10:57,300 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:10:57,300 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:10:57,300 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:10:57,300 protocol37.Protocol37ReadWriteHandler - Result: 100000340S         Elavon              VISA Electron               REFUND              Dhanapal TEST               Slough                                 Merch
+INFO -> 2018-01-22 12:10:57,300 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:10:57,397 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:10:57,398 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:10:57,399 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:10:57,399 protocol37.Protocol37ReadWriteHandler - Result: 100000340S.        2100112295A.I.I.C.     00000000001Date 11/01/18 Time 16:17TML 10000034 STAN 000005Mod. Online     B.C. ICCAUT. 039152             PAN     ***
+INFO -> 2018-01-22 12:10:57,399 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:10:57,494 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:10:57,494 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:10:57,494 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:10:57,494 protocol37.Protocol37ReadWriteHandler - Result: 100000340S*********0010-----RECEIPT---COPY-----AMOUNT  GBP         1.00                          TRANSACTION APPROVED                                 THANK YOU
+INFO -> 2018-01-22 12:10:57,494 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:10:57,673 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:10:57,675 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:10:57,675 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:10:57,675 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        }}
+INFO -> 2018-01-22 12:10:57,675 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:10:57,676 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:10:57,676 protocol37.ReceiptGenerator - 
+         Elavon         
+     VISA Electron      
+         REFUND         
+     Dhanapal TEST      
+         Slough         
+                        
+Merch.        2100112295
+A.I.I.C.     00000000001
+Date 11/01/18 Time 16:17
+TML 10000034 STAN 000005
+Mod. Online     B.C. ICC
+AUT. 039152             
+PAN     ************0010
+-----RECEIPT---COPY-----
+AMOUNT  GBP         1.00
+                        
+  TRANSACTION APPROVED  
+                        
+       THANK YOU        
+;
+INFO -> 2018-01-22 12:10:57,676 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64518
+TRACE-> 2018-01-22 12:10:57,676 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:10:57,677 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 12:10:57,677 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:10:57,680 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 12:10:57,693 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+DEBUG-> 2018-01-22 12:11:24,869 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 12:13:11,217 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64530,/192.168.0.181:40001)
+INFO -> 2018-01-22 12:13:11,220 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"R","terminalIp":"192.168.0.137","statusMessageIp":null,"statusMessagePort":null,"terminalPort":"40001"}
+TRACE-> 2018-01-22 12:13:11,225 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:13:11,225 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:13:11,225 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:13:11,225 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:13:11,229 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:13:11,230 app_main.IPS_Link - setting Up Tcp Connection type
+TRACE-> 2018-01-22 12:13:11,231 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 12:13:11,231 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:13:11,231 core.StatusMessageSender - starting StatusMessageSender Actor
+TRACE-> 2018-01-22 12:13:11,231 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:13:11,231 protocol37.ReceiptGenerator - starting Receipt Generator
+INFO -> 2018-01-22 12:13:11,231 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:13:11,231 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:13:11,303 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64531)
+INFO -> 2018-01-22 12:13:11,303 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:13:11,733 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64530 : b
+INFO -> 2018-01-22 12:13:11,732 app_main.IPS_Link - received REPRINT TICKET REQUEST-> sending ACK
+INFO -> 2018-01-22 12:13:11,734 app_main.IPS_Link - Starting print receipt funtion
+INFO -> 2018-01-22 12:13:11,734 core.tcp.TcpClientActor - sent Application msg: at cycle: 0 -> 000000000R100-
+INFO -> 2018-01-22 12:13:11,753 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:13:11,754 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:13:11,863 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:13:11,864 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:13:11,865 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:13:11,865 protocol37.Protocol37ReadWriteHandler - Result: 100000340S         Elavon              VISA Electron               REFUND              Dhanapal TEST               Slough                                 Merch
+INFO -> 2018-01-22 12:13:11,865 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:13:11,962 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:13:11,963 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:13:11,964 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:13:11,964 protocol37.Protocol37ReadWriteHandler - Result: 100000340S.        2100112295A.I.I.C.     00000000001Date 11/01/18 Time 16:17TML 10000034 STAN 000005Mod. Online     B.C. ICCAUT. 039152             PAN     ***
+INFO -> 2018-01-22 12:13:11,965 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:13:12,063 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:13:12,064 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:13:12,065 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:13:12,065 protocol37.Protocol37ReadWriteHandler - Result: 100000340S*********0010-----RECEIPT---COPY-----AMOUNT  GBP         1.00                          TRANSACTION APPROVED                                 THANK YOU
+INFO -> 2018-01-22 12:13:12,065 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:13:12,224 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:13:12,226 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:13:12,227 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:13:12,228 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        }}
+INFO -> 2018-01-22 12:13:12,228 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:13:12,229 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:13:12,229 protocol37.ReceiptGenerator - 
+         Elavon         
+     VISA Electron      
+         REFUND         
+     Dhanapal TEST      
+         Slough         
+                        
+Merch.        2100112295
+A.I.I.C.     00000000001
+Date 11/01/18 Time 16:17
+TML 10000034 STAN 000005
+Mod. Online     B.C. ICC
+AUT. 039152             
+PAN     ************0010
+-----RECEIPT---COPY-----
+AMOUNT  GBP         1.00
+                        
+  TRANSACTION APPROVED  
+                        
+       THANK YOU        
+;
+INFO -> 2018-01-22 12:13:12,229 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64530
+INFO -> 2018-01-22 12:13:12,234 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 12:13:12,232 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:13:12,238 core.tcp.TcpClientActor - Stopping TCP client Actor
+TRACE-> 2018-01-22 12:13:12,234 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:13:12,271 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+DEBUG-> 2018-01-22 12:13:43,393 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
+TRACE-> 2018-01-22 12:34:05,063 core.tcp.TcpServerActor - Server :Connected(/192.168.0.181:64681,/192.168.0.181:40001)
+INFO -> 2018-01-22 12:34:07,296 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"T","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 12:34:07,299 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:34:07,299 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:34:07,300 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:34:07,301 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:34:07,301 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:34:07,302 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:34:07,303 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:34:07,303 core.StatusMessageSender - starting StatusMessageSender Actor
+TRACE-> 2018-01-22 12:34:07,304 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 12:34:07,304 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:34:07,304 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:34:07,304 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:34:07,304 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:34:07,334 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64682)
+INFO -> 2018-01-22 12:34:07,334 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:34:07,815 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64681 : b
+INFO -> 2018-01-22 12:34:07,815 app_main.IPS_Link - received TERMINAL-STATUS REQUEST-> sending ACK
+INFO -> 2018-01-22 12:34:07,815 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 12:34:07,815 app_main.IPS_Link - starting "GET TERMINAL STATUS" function
+INFO -> 2018-01-22 12:34:07,821 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 12:34:07,822 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+ERROR-> 2018-01-22 12:34:07,823 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000T0000000000000000
+DEBUG-> 2018-01-22 12:34:07,824 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 12:34:07,921 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:34:07,925 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:34:07,925 core.tcp.TcpClientActor - sent Application msg: at cycle: 41331 -> 000000000T0000000000000000
+INFO -> 2018-01-22 12:34:08,022 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:34:08,022 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:34:08,054 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 12:34:08,054 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 12:34:08,054 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:34:08,240 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 12:34:08,240 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 12:34:08,253 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:34:10,504 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 12:34:10,505 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 12:34:10,505 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:34:10,602 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:34:10,603 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:34:10,603 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:34:10,603 protocol37.Protocol37ReadWriteHandler - Result: 100000340T000000000000000000500000000
+INFO -> 2018-01-22 12:34:10,603 protocol37.ReceiptGenerator - generating receipt...!
+INFO -> 2018-01-22 12:34:10,603 core.tcp.TcpClientActor - sent ack: z
+TRACE-> 2018-01-22 12:34:10,603 protocol37.ReceiptGenerator - OK;OK;
+INFO -> 2018-01-22 12:34:10,603 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64681
+TRACE-> 2018-01-22 12:34:10,604 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:34:10,605 protocol37.ReceiptGenerator - stopping Receipt Generator
+INFO -> 2018-01-22 12:34:10,606 core.tcp.TcpClientActor - Stopping TCP client Actor
+TRACE-> 2018-01-22 12:34:10,606 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:34:10,607 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+FATAL-> 2018-01-22 12:35:45,632 core.tcp.TcpConnectionHandlerActor - TIMEOUT EXCEEDED KILLING ALL
+TRACE-> 2018-01-22 12:35:45,635 core.tcp.TcpConnectionHandlerActor - turning off TIMER
+INFO -> 2018-01-22 12:37:51,392 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"X","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 12:37:51,398 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:37:51,398 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:37:51,398 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:37:51,398 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:37:51,402 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:37:51,402 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:37:51,403 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:37:51,403 app_main.IPS_Link - Starting IPS_LINK ACTOR
+TRACE-> 2018-01-22 12:37:51,403 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 12:37:51,403 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:37:51,404 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:37:51,404 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:37:51,405 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:37:51,481 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64706)
+INFO -> 2018-01-22 12:37:51,482 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:37:51,912 app_main.IPS_Link - received X-report REQUEST-> sending ACK
+INFO -> 2018-01-22 12:37:51,912 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 12:37:51,912 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64681 : b
+INFO -> 2018-01-22 12:37:51,913 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 12:37:51,913 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+INFO -> 2018-01-22 12:37:51,915 app_main.IPS_Link - starting "REPORT" Function
+ERROR-> 2018-01-22 12:37:51,919 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000T0000000000000000
+DEBUG-> 2018-01-22 12:37:51,920 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 12:37:52,020 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:37:52,020 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:37:52,021 core.tcp.TcpClientActor - sent Application msg: at cycle: 58120 -> 000000000T0000000000000000
+INFO -> 2018-01-22 12:37:52,111 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:37:52,119 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:37:52,155 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: OPERATION IN PROGRESS
+INFO -> 2018-01-22 12:37:52,155 core.StatusMessageSender - sending status message :$OPERATION IN PROGRESS$
+INFO -> 2018-01-22 12:37:52,155 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:37:52,402 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 12:37:52,402 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 12:37:52,402 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:37:55,018 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 12:37:55,018 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 12:37:55,019 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:37:55,271 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:37:55,271 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:37:55,271 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:37:55,271 protocol37.Protocol37ReadWriteHandler - Result: 100000340T000000000000000000500000000
+INFO -> 2018-01-22 12:37:55,271 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:37:55,307 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:37:55,307 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:37:55,307 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:37:55,307 protocol37.Protocol37ReadWriteHandler - Result: 100000340S      HOST BALANCE           Dhanapal TEST               Slough                                 TML             10000034Date 22/01/18 Time 12:37STAN 
+INFO -> 2018-01-22 12:37:55,307 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:37:55,406 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:37:55,407 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:37:55,407 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:37:55,407 protocol37.Protocol37ReadWriteHandler - Result: 100000340S000003                                     POS BALANCE             GBP                 0.00                        BANK BALANCE            GBP      
+INFO -> 2018-01-22 12:37:55,407 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:37:55,577 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:37:55,577 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:37:55,578 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:37:55,578 protocol37.Protocol37ReadWriteHandler - Result: 100000340S           0.00                          OPERATION SUCCEEDED   }}
+INFO -> 2018-01-22 12:37:55,578 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:37:55,578 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:37:55,578 protocol37.ReceiptGenerator - 10000034;OK;Successful;0000000000000000;500;
+      HOST BALANCE      
+     Dhanapal TEST      
+         Slough         
+                        
+TML             10000034
+Date 22/01/18 Time 12:37
+STAN 000003             
+                        
+POS BALANCE             
+GBP                 0.00
+                        
+BANK BALANCE            
+GBP                 0.00
+                        
+  OPERATION SUCCEEDED   
+;
+INFO -> 2018-01-22 12:37:55,578 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64681
+TRACE-> 2018-01-22 12:37:55,580 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:37:55,580 protocol37.ReceiptGenerator - stopping Receipt Generator
+INFO -> 2018-01-22 12:37:55,581 core.tcp.TcpClientActor - Stopping TCP client Actor
+TRACE-> 2018-01-22 12:37:55,580 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:37:55,588 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+INFO -> 2018-01-22 12:38:21,235 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"R","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 12:38:21,237 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:38:21,238 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:38:21,238 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:38:21,239 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:38:21,239 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:38:21,239 app_main.IPS_Link - setting Up Tcp Connection type
+INFO -> 2018-01-22 12:38:21,240 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+TRACE-> 2018-01-22 12:38:21,240 core.StatusMessageSender - starting StatusMessageSender Actor
+INFO -> 2018-01-22 12:38:21,241 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:38:21,241 app_main.IPS_Link - Starting IPS_LINK ACTOR
+TRACE-> 2018-01-22 12:38:21,241 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:38:21,241 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:38:21,245 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:38:21,251 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64709)
+INFO -> 2018-01-22 12:38:21,251 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:38:21,744 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64681 : b
+INFO -> 2018-01-22 12:38:21,744 app_main.IPS_Link - received REPRINT TICKET REQUEST-> sending ACK
+INFO -> 2018-01-22 12:38:21,745 app_main.IPS_Link - Starting print receipt funtion
+INFO -> 2018-01-22 12:38:21,748 core.tcp.TcpClientActor - sent Application msg: at cycle: 0 -> 000000000R100-
+INFO -> 2018-01-22 12:38:21,791 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:38:21,792 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:38:21,893 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:21,893 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:21,894 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:21,895 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:21,895 protocol37.Protocol37ReadWriteHandler - Result: 100000340S         Elavon              VISA Electron               REFUND              Dhanapal TEST               Slough                                 Merch
+INFO -> 2018-01-22 12:38:21,989 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:21,990 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:21,990 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:21,990 protocol37.Protocol37ReadWriteHandler - Result: 100000340S.        2100112295A.I.I.C.     00000000001Date 11/01/18 Time 16:17TML 10000034 STAN 000005Mod. Online     B.C. ICCAUT. 039152             PAN     ***
+INFO -> 2018-01-22 12:38:21,990 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:22,090 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:22,090 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:22,090 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:22,091 protocol37.Protocol37ReadWriteHandler - Result: 100000340S*********0010-----RECEIPT---COPY-----AMOUNT  GBP         1.00                          TRANSACTION APPROVED                                 THANK YOU
+INFO -> 2018-01-22 12:38:22,091 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:22,303 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:22,303 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:22,304 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:22,304 protocol37.Protocol37ReadWriteHandler - Result: 100000340S        }}
+INFO -> 2018-01-22 12:38:22,304 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:22,304 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:38:22,305 protocol37.ReceiptGenerator - 
+         Elavon         
+     VISA Electron      
+         REFUND         
+     Dhanapal TEST      
+         Slough         
+                        
+Merch.        2100112295
+A.I.I.C.     00000000001
+Date 11/01/18 Time 16:17
+TML 10000034 STAN 000005
+Mod. Online     B.C. ICC
+AUT. 039152             
+PAN     ************0010
+-----RECEIPT---COPY-----
+AMOUNT  GBP         1.00
+                        
+  TRANSACTION APPROVED  
+                        
+       THANK YOU        
+;
+INFO -> 2018-01-22 12:38:22,305 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64681
+TRACE-> 2018-01-22 12:38:22,305 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:38:22,307 protocol37.ReceiptGenerator - stopping Receipt Generator
+INFO -> 2018-01-22 12:38:22,307 core.tcp.TcpClientActor - Stopping TCP client Actor
+TRACE-> 2018-01-22 12:38:22,308 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:38:22,309 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+INFO -> 2018-01-22 12:38:24,146 core.tcp.TcpConnectionHandlerActor - received-tcp: {"printFlag":"1","messageCode":"Z","amount":null,"terminalIp":"192.168.0.137","statusMessageIp":null,"GTbit":null,"statusMessagePort":null,"terminalPort":"40001","GTmessage":null}
+TRACE-> 2018-01-22 12:38:24,149 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 1
+TRACE-> 2018-01-22 12:38:24,149 core.tcp.TcpConnectionHandlerActor - VALIDATION PASSED------> 2
+TRACE-> 2018-01-22 12:38:24,149 core.tcp.TcpConnectionHandlerActor - Incoming Json Validated..!
+DEBUG-> 2018-01-22 12:38:24,150 core.tcp.TcpConnectionHandlerActor - SETTING RECEIVE TIMEOUT OF 95 SEC
+TRACE-> 2018-01-22 12:38:24,150 app_main.IPS_Link - =============================START---OF---LOG================================
+INFO -> 2018-01-22 12:38:24,150 app_main.IPS_Link - setting Up Tcp Connection type
+TRACE-> 2018-01-22 12:38:24,150 app_main.IPS_Link - Starting IPS_LINK ACTOR
+INFO -> 2018-01-22 12:38:24,150 core.StatusMessageSender - using same channel for StatusMessages and Receipt
+INFO -> 2018-01-22 12:38:24,150 protocol37.ReceiptGenerator - starting Receipt Generator
+TRACE-> 2018-01-22 12:38:24,150 core.StatusMessageSender - starting StatusMessageSender Actor
+TRACE-> 2018-01-22 12:38:24,150 core.tcp.TcpClientActor - starting TCP Client
+INFO -> 2018-01-22 12:38:24,150 core.tcp.TcpClientActor - starting handler
+INFO -> 2018-01-22 12:38:24,150 core.tcp.TcpClientActor - Starting TCP client Actor
+INFO -> 2018-01-22 12:38:24,157 core.tcp.TcpClientActor - connected :Connected(/192.168.0.137:40001,/192.168.0.181:64710)
+INFO -> 2018-01-22 12:38:24,157 core.tcp.TcpClientActor - ackReceived set to allow first message to be sent through tcp
+INFO -> 2018-01-22 12:38:24,675 core.tcp.TcpConnectionHandlerActor - sending out ACK to /192.168.0.181:64681 : b
+INFO -> 2018-01-22 12:38:24,675 app_main.IPS_Link - received Z-report REQUEST-> sending ACK
+INFO -> 2018-01-22 12:38:24,676 app_main.IPS_Link - setting printing details to terminal with flag: 1
+INFO -> 2018-01-22 12:38:24,678 core.tcp.TcpClientActor - sent E msg: 000000000E1:
+INFO -> 2018-01-22 12:38:24,678 core.tcp.TcpClientActor - setting ackReceived to false in order to wait for ack before next msg is sent
+INFO -> 2018-01-22 12:38:24,678 app_main.IPS_Link - starting "REPORT" Function
+ERROR-> 2018-01-22 12:38:24,679 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: 000000000C0000000000000000
+DEBUG-> 2018-01-22 12:38:24,679 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 12:38:24,758 core.tcp.TcpClientActor - ACK
+INFO -> 2018-01-22 12:38:24,758 core.tcp.TcpClientActor - setting ackReceived to TRUE as ACK received 
+INFO -> 2018-01-22 12:38:24,759 core.tcp.TcpClientActor - sent Application msg: at cycle: 35747 -> 000000000C0000000000000000
+INFO -> 2018-01-22 12:38:24,964 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+ERROR-> 2018-01-22 12:38:24,964 core.tcp.TcpClientActor - havent received ack for last msg sent so cannot send: z
+DEBUG-> 2018-01-22 12:38:24,964 core.tcp.TcpClientActor - retrying to send same msg
+INFO -> 2018-01-22 12:38:25,272 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: AUTH IN PROGRESS    
+INFO -> 2018-01-22 12:38:25,272 core.StatusMessageSender - sending status message :$AUTH IN PROGRESS    $
+INFO -> 2018-01-22 12:38:25,272 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:38:27,730 protocol37.Protocol37ReadWriteHandler - Forwarding Status Message: TRANSACTION COMPLETE
+INFO -> 2018-01-22 12:38:27,731 core.StatusMessageSender - sending status message :$TRANSACTION COMPLETE$
+INFO -> 2018-01-22 12:38:27,731 core.tcp.TcpConnectionHandlerActor - sending out statusMessage to /192.168.0.181:64681
+INFO -> 2018-01-22 12:38:27,935 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:27,935 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:27,936 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:27,936 protocol37.Protocol37ReadWriteHandler - Result: 100000340C0000000000000000000000000000000000500
+INFO -> 2018-01-22 12:38:27,936 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:27,998 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:27,998 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:27,998 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:27,998 protocol37.Protocol37ReadWriteHandler - Result: 100000340S       END OF DAY            Dhanapal TEST               Slough                                 TML             10000034Date 22/01/18 Time 12:38STAN 
+INFO -> 2018-01-22 12:38:27,998 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:28,098 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:28,098 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:28,098 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:28,098 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:28,098 protocol37.Protocol37ReadWriteHandler - Result: 100000340S000004                                     POS BALANCE             GBP                 0.00                        BANK BALANCE            GBP      
+INFO -> 2018-01-22 12:38:28,344 protocol37.Protocol37ReadWriteHandler - Validating Received message calculating LRC
+INFO -> 2018-01-22 12:38:28,344 protocol37.Protocol37ReadWriteHandler - STX ETX FOUND in message
+INFO -> 2018-01-22 12:38:28,344 protocol37.Protocol37ReadWriteHandler - Validated -> matched LRC
+INFO -> 2018-01-22 12:38:28,345 protocol37.Protocol37ReadWriteHandler - Result: 100000340S           0.00                          OPERATION SUCCEEDED   }}
+INFO -> 2018-01-22 12:38:28,345 core.tcp.TcpClientActor - sent ack: z
+INFO -> 2018-01-22 12:38:28,346 protocol37.ReceiptGenerator - generating receipt...!
+TRACE-> 2018-01-22 12:38:28,346 protocol37.ReceiptGenerator - 10000034;OK;Successful;0000000000000000;0000000000000000;500;
+       END OF DAY       
+     Dhanapal TEST      
+         Slough         
+                        
+TML             10000034
+Date 22/01/18 Time 12:38
+STAN 000004             
+                        
+POS BALANCE             
+GBP                 0.00
+                        
+BANK BALANCE            
+GBP                 0.00
+                        
+  OPERATION SUCCEEDED   
+;
+INFO -> 2018-01-22 12:38:28,346 core.tcp.TcpConnectionHandlerActor - sending out FINAL RECEIPT to /192.168.0.181:64681
+TRACE-> 2018-01-22 12:38:28,347 core.tcp.TcpConnectionHandlerActor - =============================END---OF---LOG================================
+INFO -> 2018-01-22 12:38:28,347 protocol37.ReceiptGenerator - stopping Receipt Generator
+TRACE-> 2018-01-22 12:38:28,347 core.StatusMessageSender - Stopping StatusMessageSender Actor
+INFO -> 2018-01-22 12:38:28,347 core.tcp.TcpClientActor - Stopping TCP client Actor
+INFO -> 2018-01-22 12:38:28,347 app_main.IPS_Link - Stopping IPS_LINK ACTOR
+FATAL-> 2018-01-22 12:40:03,365 core.tcp.TcpConnectionHandlerActor - TIMEOUT EXCEEDED KILLING ALL
+TRACE-> 2018-01-22 12:40:03,365 core.tcp.TcpConnectionHandlerActor - turning off TIMER
+DEBUG-> 2018-01-22 15:57:50,135 core.tcp.TcpConnectionHandlerActor - Server: Connection ClosureErrorClosed(An existing connection was forcibly closed by the remote host)
