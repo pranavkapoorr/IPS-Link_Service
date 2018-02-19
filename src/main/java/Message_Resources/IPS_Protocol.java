@@ -23,6 +23,8 @@ public class IPS_Protocol {
 	private String terminalPort;
 	@JsonProperty
 	private String GTmessage;
+	@JsonProperty
+	private String timeOut;
 
 	public IPS_Protocol() {
 	//empty Constructor
@@ -38,6 +40,7 @@ public class IPS_Protocol {
 		map.put("statusMessagePort",statusMessagePort);
 		map.put("terminalPort",terminalPort);
 		map.put("GTmessage",GTmessage);
+		map.put("timeOut",timeOut);
 		return map;
 	}
 }

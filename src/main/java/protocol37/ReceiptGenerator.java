@@ -2,7 +2,11 @@ package protocol37;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import Message_Resources.FinalReceipt;
+import Message_Resources.Receipt_Json;
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import app_main.IPS_Link;
@@ -12,6 +16,7 @@ public class ReceiptGenerator extends AbstractActor{
 	private StringBuffer receiptBuffer = new StringBuffer();
 	StringBuffer output = new StringBuffer();
 	StringBuilder receipt = new StringBuilder();
+	private final ObjectMapper mapper;
 	//private Database database = new Database();
 	private final boolean  printOnECR;
 	public static Props props(boolean printOnECR){
@@ -19,6 +24,7 @@ public class ReceiptGenerator extends AbstractActor{
 	}
 	public ReceiptGenerator(boolean printOnECR) {
 		this.printOnECR = printOnECR;
+		this.mapper = new ObjectMapper();
 	}
 	
 	@Override
@@ -29,36 +35,48 @@ public class ReceiptGenerator extends AbstractActor{
 	public Receive createReceive() {
 		return receiveBuilder().match(String.class, message->{
 			
-		
+		/***checks if the current String received is a receipt message and then puts it in to String buffer for formatting it***/
 				if(message.contains("0S")){
+					/***removes terminal id from each message**/
 					receiptBuffer.append(message.substring(10, message.length()));
-					
+					/**checks if this is the last cycle of receipt depending on the delimiter**/
 					if(message.charAt(message.length()-1) == (char)27){//last cycle
 						String tempReceipt =  receiptBuffer.toString().replace(String.valueOf((char)127), "").replaceAll("}", "").replace(String.valueOf((char)27), "");
 						receiptBuffer = null;
 						receipt.append(tempReceipt);
-				
+						/**formatting receipt adding "/n" **/
 						for(int i = 24; i< receipt.length(); i+=25){
 							receipt.insert(i,"\n");
 						}
-						//String 
 						output.append("\n"+receipt+"\n;");
 					//	parseReceipt(receipt.toString());
+						/**sends out the receipt if printOnECR is enabled ie no S message will be expected but U message will be if GT bit is on**/
 						if(printOnECR ){
 							log.info("generating receipt...!");
 							log.trace(output.toString());
-							getContext().getParent().tell(new FinalReceipt(output.toString()), getSelf());
-							output = null;
-							if(IPS_Link.isAdvance){
-								IPS_Link.isAdvance = false;
+							Receipt_Json receipt_Json = new Receipt_Json();
+							if(IPS_Link.isLastTransStatus){
+								String status = lastTransStatus(output.toString());
+								receipt_Json.setReceipt(status);
+							}else{
+								receipt_Json.setReceipt(output.toString());
 							}
+							String out = mapper.writeValueAsString(receipt_Json);
+							log.trace("JSON -> "+out);
+							getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
+							out = null;
+							receipt_Json = null;
+							output = null;
+							//if(IPS_Link.isAdvance){
+							//	IPS_Link.isAdvance = false;
+						//	}
 						}
 					}
 					
 					
 				}
-				
-				else if(message.contains("0E")){
+				/**checks if the received message is result of reversal, payment etc**/
+				else if(message.contains("0E0")){
 					String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardType = message.substring(47, 48);
@@ -92,7 +110,8 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
-				else if(message.contains("0V")){
+				/**checks if the received message is result of DCC transaction**/
+				else if(message.contains("0V0")){
 					String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardType = message.substring(47, 48);
@@ -129,11 +148,12 @@ public class ReceiptGenerator extends AbstractActor{
 						String reason4Failure = message.substring(12,36);
 						//database.insertData(getCurrentTime(),Integer.parseInt(terminalId), "DCC-Payment", reason4Failure);
 						output.append(terminalId+";"+String.format("%08d", IPS_Link.amount)+";KO;TRANSACTION UNSUCCESSFUL;"+aquirerCode+";"+reason4Failure+";");
-					}else if(message.substring(message.indexOf('V')+1, message.indexOf('E')+3).equalsIgnoreCase("09")){
+					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("09")){
 						output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
-				else if(message.contains("0A")){
+				/**checks if the received message is result of REFUND transaction**/
+				else if(message.contains("0A0")){
 					String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardPan = message.substring(12,31);
@@ -151,7 +171,8 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
-				else if(message.contains("0T")){
+				/**checks if the received message is result of TERMINAL STATUS transaction**/
+				else if(message.contains("0T0")){
 					String terminalId = message.substring(0, 8);
 					String totalInEur = message.substring(12,28);
 					String actionCode = message.substring(28,31);
@@ -167,7 +188,7 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
-				else if(message.contains("0C")){
+				else if(message.contains("0C0")){
 					String terminalId = message.substring(0, 8);
 					if(message.substring(message.indexOf('C')+1, message.indexOf('C')+3).equalsIgnoreCase("00")){
 						String totalInEur = message.substring(12,28);
@@ -180,7 +201,8 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append(terminalId+";KO;Unsuccessful;"+failureReason+";"+actionCode+";");
 					}
 				}
-				else if(message.contains("0D")){
+				/**checks if the received message is result of DLL transaction**/
+				else if(message.contains("0D0")){
 					String terminalId = message.substring(0, 8);
 					String STAN = message.substring(12,18);
 					String progrNum = message.substring(18,24);
@@ -192,26 +214,36 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append("KO;Unsuccessful;"+failureReason);
 					}
 				}
-				else if(message.contains("0U")){
+				/**checks if the received message is result of ADDITIONAL DATA FROM GT transaction**/
+				else if(message.contains("0U0")){
 					int length = Integer.parseInt(message.substring(16,19));
 					String AdditionalGtData = message.substring(19,19+length);
 					output.append(AdditionalGtData+";");
-					
-					if(!printOnECR   && IPS_Link.isAdvance){
+	
+					if(!printOnECR  && IPS_Link.isAdvance){
 						log.info("generating receipt...!");
 						log.trace(output.toString());
-						getContext().getParent().tell(new FinalReceipt(output.toString()), getSelf());
+						Receipt_Json receipt_Json = new Receipt_Json();
+						receipt_Json.setReceipt(output.toString());
+						String out = mapper.writeValueAsString(receipt_Json);
+						log.trace("JSON -> "+out);
+						getContext().getParent().tell(new FinalReceipt(out), getSelf());
+						out = null;
+						receipt_Json = null;
 						output = null;
-						IPS_Link.isAdvance = false;
 					}
 				}
 				
 					if((!printOnECR || IPS_Link.isTerminalStatus) && !IPS_Link.isAdvance){
 						log.info("generating receipt...!");
-						log.trace(output.toString());
-						getContext().getParent().tell(new FinalReceipt(output.toString()), getSelf());
+						Receipt_Json receipt_Json = new Receipt_Json();
+						receipt_Json.setReceipt(output.toString());
+						String out = mapper.writeValueAsString(receipt_Json);
+						log.trace("JSON -> "+out);
+						getContext().getParent().tell(new FinalReceipt(out), getSelf());
+						out = null;
+						receipt_Json = null;
 						output = null;
-						IPS_Link.isTerminalStatus =  false;
 					}
 				
 		}).build();
@@ -367,6 +399,14 @@ public class ReceiptGenerator extends AbstractActor{
 		LocalTime localTime = localDateTime.toLocalTime();
 		return new String[]{LocalDate.now().toString(),localTime.toString()};
 	}*/
+	private String lastTransStatus(String receipt){
+		if(receipt.contains("TRANSACTION")){
+			return receipt.substring(receipt.indexOf("TRANSACTION"),
+					receipt.indexOf("TRANSACTION")+20);
+		}
+		return "";
+	}
+	
 	@Override
 	public void postStop() throws Exception {
 		log.info("stopping Receipt Generator");

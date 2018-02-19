@@ -35,9 +35,12 @@ public class IPS_Link extends AbstractActor{
 	private final static Logger log = LogManager.getLogger(IPS_Link.class);
 	//private String finalReceipt;
 	private final ActorRef receiptGenerator;
-	public static volatile long amount=0;
-	public static volatile boolean isAdvance = false;
-	public static volatile boolean isTerminalStatus = false;
+	public static volatile long amount = 0;
+	public static volatile boolean isAdvance;
+	public static volatile boolean isTerminalStatus;
+	public static volatile boolean isLastTransStatus;
+	public static volatile boolean sendToTerminal;
+	private volatile int connectionCycle;
 
 
 
@@ -74,6 +77,11 @@ public class IPS_Link extends AbstractActor{
 
 	@Override
 	public void preStart() throws Exception {
+		isAdvance = false;
+		isTerminalStatus = false;
+		isLastTransStatus = false;
+		sendToTerminal = false;
+		connectionCycle = 0;
 		log.trace("Starting IPS_LINK ACTOR");
 	}
 
@@ -83,12 +91,11 @@ public class IPS_Link extends AbstractActor{
 	 * @param additionaldataGT -> 0 for not sending additional data to GT and 1 for sending additional data to GT and if 1 then additional U command should be sent too
 	 *****/
 	public void payment(int printFlag,long amountInPence,int additionaldataGT) {
-		log.info("setting printing details to terminal with flag: "+printFlag);
-		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.printOptions(printFlag)), ActorRef.noSender());
-		//TimeUnit.MILLISECONDS.sleep(320);
-		log.info("starting \"PAYMENT\" function");
-		amount = amountInPence;
-		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.payment(additionaldataGT,amountInPence)), ActorRef.noSender());
+			log.info("setting printing details to terminal with flag: "+printFlag);
+			communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.printOptions(printFlag)), ActorRef.noSender());
+			log.info("starting \"PAYMENT\" function");
+			amount = amountInPence;
+			communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.payment(additionaldataGT,amountInPence)), ActorRef.noSender());
 	} 
 	/**** Advanced-PAYMENT 
 	 *****/
@@ -149,10 +156,10 @@ public class IPS_Link extends AbstractActor{
 	 * @throws InterruptedException 
 	 * */
 	public void dllFunctions(int printFlag, int dllFlag) {
-		log.info("setting printing details to terminal with flag: "+printFlag);
-		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.printOptions(printFlag)), ActorRef.noSender());
-		log.info("Starting \"DLL FUNCTION\" with flag: "+dllFlag);
-		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.dllFunction(dllFlag)), ActorRef.noSender());
+			log.info("setting printing details to terminal with flag: "+printFlag);
+			communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.printOptions(printFlag)), ActorRef.noSender());
+			log.info("Starting \"DLL FUNCTION\" with flag: "+dllFlag);
+			communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.dllFunction(dllFlag)), ActorRef.noSender());
 	}
 	/****REPORT 
 	 * @param reportFlag : <li> 0 for X Report.</li><li> 1 for Z report</li>
@@ -206,7 +213,7 @@ public class IPS_Link extends AbstractActor{
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.startLocalTelephone(speed_in_bps)), ActorRef.noSender());
 		//talkToTerminal(terminalIp, terminalPort, sendAcknowledgement());
 	}
-	private boolean isIPSRequest(String request){
+	private boolean isIPSRequest(String request){//not used
 		boolean result = false;
 		if(request.charAt(0)=='p' && request.charAt(request.length()-2)=='k'){
 			log.debug("found starting and ending bits");
@@ -225,7 +232,7 @@ public class IPS_Link extends AbstractActor{
 	 * @param msg is the message for which lrc is calculated;
 	 * @return Lrc character;
 	 */
-	public static char calcIpsLRC(String msg) {
+	public static char calcIpsLRC(String msg) {//not used
 		int checksum=100;
 		for (int i = 0; i < msg.length(); i++){
 			checksum ^= msg.charAt(i);
@@ -237,85 +244,109 @@ public class IPS_Link extends AbstractActor{
 	public Receive createReceive() {
 		return receiveBuilder()
 				.match(HashMap.class, resourceMapX->{
-					TimeUnit.MILLISECONDS.sleep(500);
-					@SuppressWarnings("unchecked")
-					HashMap<String, String> resourceMap = resourceMapX;
-					if(resourceMap.get("messageCode").equals("P")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received PAYMENT REQUEST-> sending ACK");
-						long amount = Integer.parseInt((String) resourceMap.get("amount"));
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
-						if(additonaldataGT == 1){
-							paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
-						}else if(additonaldataGT == 0){
-							payment(printFlag, amount,additonaldataGT);
+					if(sendToTerminal){
+						log.info("Successfully connected to terminal at {} cycle",connectionCycle);
+						@SuppressWarnings("unchecked")
+						HashMap<String, String> resourceMap = resourceMapX;
+						if(resourceMap.get("messageCode").equals("P")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received PAYMENT REQUEST");
+							long amount = Integer.parseInt((String) resourceMap.get("amount"));
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(additonaldataGT == 1){
+								paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+							}else if(additonaldataGT == 0){
+								payment(printFlag, amount,additonaldataGT);
+							}
+	
+						}else if(resourceMap.get("messageCode").equals("A")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received REFUND REQUEST");
+							long amount = Integer.parseInt((String) resourceMap.get("amount"));
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(additonaldataGT == 1){
+								refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+							}else if(additonaldataGT == 0){
+								refund(printFlag, amount,additonaldataGT);
+							}
+	
+						}else if(resourceMap.get("messageCode").equals("S")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received REVERSAL REQUEST");
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(additonaldataGT == 1){
+								reversalAdvanced(printFlag,resourceMap.get("GTmessage"));
+							}else if(additonaldataGT == 0){
+								reversal(printFlag,additonaldataGT);
+							}
+	
+						}else if(resourceMap.get("messageCode").equals("D")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received FIRST DLL REQUEST");
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							dllFunctions(printFlag,1);
+	
+						}else if(resourceMap.get("messageCode").equals("M")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received MANUAL DLL REQUEST");
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							dllFunctions(printFlag,0);
+	
+						}else if(resourceMap.get("messageCode").equals("X")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received X-report REQUEST");
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							Report(printFlag,0);
+	
+						}else if(resourceMap.get("messageCode").equals("Z")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received Z-report REQUEST");
+							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+							Report(printFlag, 1);
+						}else if(resourceMap.get("messageCode").equals("T")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							isTerminalStatus =  true;
+							log.info("received TERMINAL-STATUS REQUEST");
+							int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
+							getTerminalStatus(printFlag);
+	
+						}else if(resourceMap.get("messageCode").equals("R")){
+							String ACK = String.valueOf((char)06);
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received REPRINT TICKET REQUEST");
+							reprintTicket();
+	
+						}else if(resourceMap.get("messageCode").equals("L")){
+							String ACK = String.valueOf((char)06);
+							isLastTransStatus = true;
+							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
+							log.info("received LAST TRANSACTION STATUS REQUEST");
+							reprintTicket();
+	
+						}else {
+							String NACK = String.valueOf((char)21);
+							context().parent().tell(NACK+calcIpsLRC(NACK), getSelf());
+							log.info("UNKNOWN REQUEST-> sending NACK");
 						}
-
-					}else if(resourceMap.get("messageCode").equals("A")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received REFUND REQUEST-> sending ACK");
-						long amount = Integer.parseInt((String) resourceMap.get("amount"));
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
-						if(additonaldataGT == 1){
-							refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
-						}else if(additonaldataGT == 0){
-							refund(printFlag, amount,additonaldataGT);
+					}else{
+						/***sending the received resourceMap to itself unless the connection with terminal is successful***/
+						getSelf().tell(resourceMapX, getSelf());
+						if(connectionCycle == 0){
+							log.debug("haven't connected to terminal so resending to itself...");
 						}
-
-					}else if(resourceMap.get("messageCode").equals("S")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received REVERSAL REQUEST-> sending ACK");
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
-						if(additonaldataGT == 1){
-							reversalAdvanced(printFlag,resourceMap.get("GTmessage"));
-						}else if(additonaldataGT == 0){
-							reversal(printFlag,additonaldataGT);
-						}
-
-					}else if(resourceMap.get("messageCode").equals("D")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received DLL REQUEST-> sending ACK");
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						dllFunctions(printFlag,1);
-
-					}else if(resourceMap.get("messageCode").equals("X")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received X-report REQUEST-> sending ACK");
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						Report(printFlag,0);
-
-					}else if(resourceMap.get("messageCode").equals("Z")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received Z-report REQUEST-> sending ACK");
-						int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-						Report(printFlag, 1);
-					}else if(resourceMap.get("messageCode").equals("T")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						isTerminalStatus =  true;
-						log.info("received TERMINAL-STATUS REQUEST-> sending ACK");
-						int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
-						getTerminalStatus(printFlag);
-
-					}else if(resourceMap.get("messageCode").equals("R")){
-						String ACK = String.valueOf((char)06);
-						context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
-						log.info("received REPRINT TICKET REQUEST-> sending ACK");
-						reprintTicket();
-
-					}else {
-						String NACK = String.valueOf((char)21);
-						context().parent().tell(NACK+calcIpsLRC(NACK), getSelf());
-						log.info("UNKNOWN REQUEST-> sending NACK");
+						connectionCycle ++;
+						
 					}
 				})
 
@@ -333,13 +364,14 @@ public class IPS_Link extends AbstractActor{
 					//System.err.println(finalReceipt);
 				}).build();
 	}
-
+	
 
 	@Override
 	public void postStop() throws Exception {
 		log.info("Stopping IPS_LINK ACTOR");
 	}
-
+	
+	
 
 
 }

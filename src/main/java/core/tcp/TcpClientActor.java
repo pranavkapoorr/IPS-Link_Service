@@ -9,6 +9,7 @@ import akka.io.Tcp;
 import akka.io.Tcp.*;
 import akka.io.TcpMessage;
 import akka.util.ByteString;
+import app_main.IPS_Link;
 import protocol37.*;
 
 public class TcpClientActor extends AbstractActor {
@@ -44,11 +45,12 @@ public class TcpClientActor extends AbstractActor {
 		return receiveBuilder()
 				.match(CommandFailed.class, conn->{
 					log.fatal("connectin Failed:"+conn);
-					getContext().getParent().tell(new FailedAttempt("*****CHECK TERMINAL CONNECTIVITY AND ADDRESS*****"), getSelf());
+					getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CHECK TERMINAL CONNECTIVITY AND ADDRESS*****\"}"), getSelf());
 					getContext().stop(getSelf());
 					//getContext().stop(getContext().getParent());
 				})
 				.match(Connected.class, conn->{
+					IPS_Link.sendToTerminal = true;
 					log.info("connected :"+conn);
 					 ackReceived = true;
 			         log.info("ackReceived set to allow first message to be sent through tcp");
@@ -103,7 +105,7 @@ public class TcpClientActor extends AbstractActor {
 					        					}
 					        					else if(retryCycle > 100000000){
 					        						log.fatal("TIMEOUT WAITING ACK");
-					        						getContext().getParent().tell(new FailedAttempt("*****CHECK PED CONNECTIVITY*****"), getSelf());
+					        						getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CHECK PED CONNECTIVITY*****\"}"), getSelf());
 					        						getContext().stop(getContext().parent());
 					        					}
 					        					else{	
@@ -140,12 +142,12 @@ public class TcpClientActor extends AbstractActor {
 	            	   log.info("String: "+s);
 	               }).match(ConnectionClosed.class, closed->{
 	            	   log.fatal("connectin cLOSED:"+closed);
-	            	  //getContext().getParent().tell(new FailedAttempt("*****CONNECTION CLOSED BY TERMINAL*****"), getSelf());
+	            	   getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CONNECTION CLOSED BY TERMINAL*****\"}"), getSelf());
 	            	  // getContext().stop(context().parent());
 						
 	               }).match(CommandFailed.class, conn->{
 						log.fatal("connectin Failed:"+conn);
-						getContext().getParent().tell(new FailedAttempt("*****UNSUCCESSFUL*****"), getSelf());
+						getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****UNSUCCESSFUL*****\"}"), getSelf());
 						getContext().stop(getContext().parent());
 						
 					})
