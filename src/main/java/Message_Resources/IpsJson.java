@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class IPS_Protocol {
+public class IpsJson {
 	@JsonProperty
 	private String printFlag ;
 	@JsonProperty
@@ -26,7 +26,7 @@ public class IPS_Protocol {
 	@JsonProperty
 	private String timeOut;
 
-	public IPS_Protocol() {
+	public IpsJson() {
 	//empty Constructor
 	}
 	public HashMap<String, String> getParsedMap(){

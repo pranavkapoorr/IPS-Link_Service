@@ -9,7 +9,7 @@ import akka.io.Tcp;
 import akka.io.Tcp.*;
 import akka.io.TcpMessage;
 import akka.util.ByteString;
-import app_main.IPS_Link;
+import app_main.Link;
 import protocol37.*;
 
 public class TcpClientActor extends AbstractActor {
@@ -50,7 +50,7 @@ public class TcpClientActor extends AbstractActor {
 					//getContext().stop(getContext().getParent());
 				})
 				.match(Connected.class, conn->{
-					IPS_Link.sendToTerminal = true;
+					Link.sendToTerminal = true;
 					log.info("connected :"+conn);
 					 ackReceived = true;
 			         log.info("ackReceived set to allow first message to be sent through tcp");

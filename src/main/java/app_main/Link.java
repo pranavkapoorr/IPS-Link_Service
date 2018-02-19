@@ -26,13 +26,13 @@ import protocol37.ReceiptGenerator;
 import java.io.*;
 
 
-public class IPS_Link extends AbstractActor{
+public class Link extends AbstractActor{
 	//private final String propertiesPath ="resources/IPS-Link.properties";
 	private final ActorRef communicationActor;
 	private final ActorRef statusMessageListener;
 	//private int printflag = 1;
 	//private Properties config= new Properties();
-	private final static Logger log = LogManager.getLogger(IPS_Link.class);
+	private final static Logger log = LogManager.getLogger(Link.class);
 	//private String finalReceipt;
 	private final ActorRef receiptGenerator;
 	public static volatile long amount = 0;
@@ -47,9 +47,9 @@ public class IPS_Link extends AbstractActor{
 
 
 	public static Props props(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR) {
-		return Props.create(IPS_Link.class , statusMessageIp, terminalAddress, printOnECR);
+		return Props.create(Link.class , statusMessageIp, terminalAddress, printOnECR);
 	}
-	private IPS_Link(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR) throws InterruptedException {
+	private Link(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR) throws InterruptedException {
 		//	try {
 		//	InputStream in=new FileInputStream(propertiesPath);
 		log.trace("=============================START---OF---LOG================================");

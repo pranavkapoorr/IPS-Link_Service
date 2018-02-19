@@ -12,7 +12,7 @@ import akka.io.Tcp.CommandFailed;
 import akka.io.Tcp.ConnectionClosed;
 import akka.io.Tcp.Received;
 import akka.util.ByteString;
-import app_main.IPS_Link;
+import app_main.Link;
 import scala.concurrent.duration.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Message_Resources.FailedAttempt;
 import Message_Resources.FinalReceipt;
-import Message_Resources.IPS_Protocol;
+import Message_Resources.IpsJson;
 import Message_Resources.StatusMessage;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -64,9 +64,9 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 						if(IPS==null ||IPS.isTerminated()){
 							ObjectMapper mapper = new ObjectMapper();
 							String message = messageX.replaceAll("'", "\\\"");
-							IPS_Protocol ips_message = null;
+							IpsJson ips_message = null;
 							try{
-								ips_message = mapper.readValue(message, IPS_Protocol.class);
+								ips_message = mapper.readValue(message, IpsJson.class);
 								HashMap<String,String> resourceMap = ips_message.getParsedMap();
 								if(isValidated(resourceMap)){
 									log.trace("Incoming Json Validated..!");
@@ -90,7 +90,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 												){
 											timeout = Integer.parseInt(resourceMap.get("timeOut"));
 										}
-										IPS = getContext().actorOf(IPS_Link.props(statusMessageAddress, terminalAddress, printOnECR),"IPS");
+										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR),"IPS");
 										context().watch(IPS);
 										ipsTerminated = false;
 										IPS.tell(resourceMap, getSelf());
