@@ -9,6 +9,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.util.ByteString;
+import app_main.Link;
 import core.serial.SSLTcpActor;
 
 public class StatusMessageSender extends AbstractActor {
@@ -38,9 +39,15 @@ public class StatusMessageSender extends AbstractActor {
 	public Receive createReceive() {
 		return receiveBuilder()
 				.match(String.class, sMsg->{
-					
+					if(Link.wait4CardRemoval){
+					    if(sMsg.contains("CARD REMOVED")){
+					        Link.cardRemoved = true;
+					        log.info("card removed......");
+					    }
+					}
 					if(statusMessageDetails==null){
 						log.info("sending status message :"+sMsg);
+						/**sending out status message **/
 						getContext().getParent().tell(new StatusMessage(sMsg), getSelf());
 					}else{
 						log.info("sending status message to :" + statusMessageDetails);

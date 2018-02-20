@@ -25,6 +25,8 @@ public class IpsJson {
 	private String GTmessage;
 	@JsonProperty
 	private String timeOut;
+	@JsonProperty
+	private boolean wait4CardRemoved;
 
 	public IpsJson() {
 	//empty Constructor
@@ -41,6 +43,7 @@ public class IpsJson {
 		map.put("terminalPort",terminalPort);
 		map.put("GTmessage",GTmessage);
 		map.put("timeOut",timeOut);
+		map.put("wait4CardRemoved",String.valueOf(wait4CardRemoved));
 		return map;
 	}
 }

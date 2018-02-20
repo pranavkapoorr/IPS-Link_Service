@@ -3,6 +3,7 @@ package protocol37;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Message_Resources.FinalReceipt;
@@ -52,21 +53,8 @@ public class ReceiptGenerator extends AbstractActor{
 					//	parseReceipt(receipt.toString());
 						/**sends out the receipt if printOnECR is enabled ie no S message will be expected but U message will be if GT bit is on**/
 						if(printOnECR ){
-							log.info("generating receipt...!");
-							log.trace(output.toString());
-							ReceiptJson receipt_Json = new ReceiptJson();
-							if(Link.isLastTransStatus){
-								String status = lastTransStatus(output.toString());
-								receipt_Json.setReceipt(status);
-							}else{
-								receipt_Json.setReceipt(output.toString());
-							}
-							String out = mapper.writeValueAsString(receipt_Json);
-							log.trace("JSON -> "+out);
-							getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
-							out = null;
-							receipt_Json = null;
-							output = null;
+						   getSelf().tell(output, getSelf());
+						    output = null;
 							//if(IPS_Link.isAdvance){
 							//	IPS_Link.isAdvance = false;
 						//	}
@@ -178,7 +166,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String actionCode = message.substring(28,31);
 					if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("00")){
 						if(Link.isTerminalStatus){
-							output.append("OK;OK;");
+							output.append("OK;Successful");
 						}else{
 							output.append(terminalId+";OK;Successful;"+totalInEur+";"+actionCode+";");
 						}
@@ -221,7 +209,9 @@ public class ReceiptGenerator extends AbstractActor{
 					output.append(AdditionalGtData+";");
 	
 					if(!printOnECR  && Link.isAdvance){
-						log.info("generating receipt...!");
+					    getSelf().tell(output, getSelf());
+                        output = null;
+					    /*log.info("generating receipt...!");
 						log.trace(output.toString());
 						ReceiptJson receipt_Json = new ReceiptJson();
 						receipt_Json.setReceipt(output.toString());
@@ -229,24 +219,36 @@ public class ReceiptGenerator extends AbstractActor{
 						log.trace("JSON -> "+out);
 						getContext().getParent().tell(new FinalReceipt(out), getSelf());
 						out = null;
-						receipt_Json = null;
-						output = null;
+						receipt_Json = null;*/
+					//	output = null;
 					}
 				}
 				
 					if((!printOnECR || Link.isTerminalStatus) && !Link.isAdvance){
-						log.info("generating receipt...!");
+					    getSelf().tell(output, getSelf());
+					    /*log.info("generating receipt...!");
 						ReceiptJson receipt_Json = new ReceiptJson();
 						receipt_Json.setReceipt(output.toString());
 						String out = mapper.writeValueAsString(receipt_Json);
 						log.trace("JSON -> "+out);
 						getContext().getParent().tell(new FinalReceipt(out), getSelf());
 						out = null;
-						receipt_Json = null;
+						receipt_Json = null;*/
 						output = null;
 					}
 				
-		}).build();
+		}).match(StringBuffer.class, receiptBuffer->{
+		    if(Link.wait4CardRemoval){
+		        if(Link.cardRemoved){
+		            generateReceipt(receiptBuffer);
+		        }else{
+		            getSelf().tell(receiptBuffer, getSelf());
+		        }
+		    }else{
+		        generateReceipt(receiptBuffer);
+		    }
+		})
+		 .build();
 	}
 
 	/*private void parseReceipt(String receipt){
@@ -405,6 +407,23 @@ public class ReceiptGenerator extends AbstractActor{
 					receipt.indexOf("TRANSACTION")+20);
 		}
 		return "";
+	}
+	
+	private void generateReceipt(StringBuffer output) throws JsonProcessingException{
+	    log.info("generating receipt...!");
+        log.trace(output.toString());
+        ReceiptJson receipt_Json = new ReceiptJson();
+        if(Link.isLastTransStatus){
+            String status = lastTransStatus(output.toString());
+            receipt_Json.setReceipt(status);
+        }else{
+            receipt_Json.setReceipt(output.toString());
+        }
+        String out = mapper.writeValueAsString(receipt_Json);
+        log.trace("JSON -> "+out);
+        getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
+    out = null;
+    receipt_Json = null;
 	}
 	
 	@Override

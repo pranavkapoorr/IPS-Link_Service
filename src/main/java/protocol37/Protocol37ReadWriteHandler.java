@@ -43,7 +43,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 					if(isStatusMessage(msg)){ //if status message
 						String message = msg.substring(msg.indexOf((char)01)+1,msg.indexOf((char)04));
 						log.info("Forwarding Status Message: " + message);
-						statusMessageSender.tell("$"+message+"$", self());
+						statusMessageSender.tell("{\"statusMessage\":\""+message+"\"}", self());
 					}
 					/** checks if the received String is Acknowledgement starting with "ACK" and ending with LRC "z" **/
 					else if(isACK(msg)){

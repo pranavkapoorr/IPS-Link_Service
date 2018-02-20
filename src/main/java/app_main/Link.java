@@ -40,7 +40,10 @@ public class Link extends AbstractActor{
 	public static volatile boolean isTerminalStatus;
 	public static volatile boolean isLastTransStatus;
 	public static volatile boolean sendToTerminal;
+	public static volatile boolean wait4CardRemoval;
+	public static volatile boolean cardRemoved;
 	private volatile int connectionCycle;
+	
 
 
 
@@ -77,6 +80,8 @@ public class Link extends AbstractActor{
 
 	@Override
 	public void preStart() throws Exception {
+	    cardRemoved = false;
+	    wait4CardRemoval = false;
 		isAdvance = false;
 		isTerminalStatus = false;
 		isLastTransStatus = false;
@@ -255,6 +260,10 @@ public class Link extends AbstractActor{
 							long amount = Integer.parseInt((String) resourceMap.get("amount"));
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+							    wait4CardRemoval = true;
+							    log.info("wait 4 card removed set to true...");
+							}
 							if(additonaldataGT == 1){
 								paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
 							}else if(additonaldataGT == 0){
@@ -268,6 +277,10 @@ public class Link extends AbstractActor{
 							long amount = Integer.parseInt((String) resourceMap.get("amount"));
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+                                wait4CardRemoval = true;
+                                log.info("wait 4 card removed set to true...");
+                            }
 							if(additonaldataGT == 1){
 								refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
 							}else if(additonaldataGT == 0){
@@ -280,6 +293,10 @@ public class Link extends AbstractActor{
 							log.info("received REVERSAL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+                                wait4CardRemoval = true;
+                                log.info("wait 4 card removed set to true...");
+                            }
 							if(additonaldataGT == 1){
 								reversalAdvanced(printFlag,resourceMap.get("GTmessage"));
 							}else if(additonaldataGT == 0){
