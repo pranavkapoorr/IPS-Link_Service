@@ -15,6 +15,7 @@ import Message_Resources.StatusMessage;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.util.ByteString;
 import core.StatusMessageSender;
@@ -254,42 +255,48 @@ public class Link extends AbstractActor{
 						@SuppressWarnings("unchecked")
 						HashMap<String, String> resourceMap = resourceMapX;
 						if(resourceMap.get("messageCode").equals("P")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received PAYMENT REQUEST");
-							long amount = Integer.parseInt((String) resourceMap.get("amount"));
-							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
-							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
-							    wait4CardRemoval = true;
-							    log.info("wait 4 card removed set to true...");
-							}
-							if(additonaldataGT == 1){
-								paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
-							}else if(additonaldataGT == 0){
-								payment(printFlag, amount,additonaldataGT);
+							/**checks if amount is between 1 pence to 100000**/
+							if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
+    							long amount = Integer.parseInt((String) resourceMap.get("amount"));
+    							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+    							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+    							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+    							    wait4CardRemoval = true;
+    							    log.info("wait 4 card removed set to true...");
+    							}
+    							if(additonaldataGT == 1){
+    								paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+    							}else if(additonaldataGT == 0){
+    								payment(printFlag, amount,additonaldataGT);
+    							}
+							}else{
+							    getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->Amount should be between 10 to 10000000\"}"), getSelf());
+							    getSelf().tell(PoisonPill.getInstance(), getSelf());
 							}
 	
 						}else if(resourceMap.get("messageCode").equals("A")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received REFUND REQUEST");
-							long amount = Integer.parseInt((String) resourceMap.get("amount"));
-							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
-							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
-                                wait4CardRemoval = true;
-                                log.info("wait 4 card removed set to true...");
+							/**checks if amount is between 1 pence to 100000**/
+                            if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
+    							long amount = Integer.parseInt((String) resourceMap.get("amount"));
+    							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
+    							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
+    							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+                                    wait4CardRemoval = true;
+                                    log.info("wait 4 card removed set to true...");
+                                }
+    							if(additonaldataGT == 1){
+    								refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+    							}else if(additonaldataGT == 0){
+    								refund(printFlag, amount,additonaldataGT);
+    							}
+                            }else{
+                                getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->Amount should be between 10 to 10000000\"}"), getSelf());
+                                getSelf().tell(PoisonPill.getInstance(), getSelf());
                             }
-							if(additonaldataGT == 1){
-								refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
-							}else if(additonaldataGT == 0){
-								refund(printFlag, amount,additonaldataGT);
-							}
 	
 						}else if(resourceMap.get("messageCode").equals("S")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received REVERSAL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
@@ -304,50 +311,36 @@ public class Link extends AbstractActor{
 							}
 	
 						}else if(resourceMap.get("messageCode").equals("D")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received FIRST DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,1);
 	
 						}else if(resourceMap.get("messageCode").equals("M")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received MANUAL DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,0);
 	
 						}else if(resourceMap.get("messageCode").equals("X")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received X-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag,0);
 	
 						}else if(resourceMap.get("messageCode").equals("Z")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received Z-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag, 1);
 						}else if(resourceMap.get("messageCode").equals("T")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							isTerminalStatus =  true;
 							log.info("received TERMINAL-STATUS REQUEST");
 							int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
 							getTerminalStatus(printFlag);
 	
 						}else if(resourceMap.get("messageCode").equals("R")){
-							String ACK = String.valueOf((char)06);
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received REPRINT TICKET REQUEST");
 							reprintTicket();
 	
 						}else if(resourceMap.get("messageCode").equals("L")){
-							String ACK = String.valueOf((char)06);
 							isLastTransStatus = true;
-							//context().parent().tell(ACK+calcIpsLRC(ACK), getSelf());
 							log.info("received LAST TRANSACTION STATUS REQUEST");
 							reprintTicket();
 	

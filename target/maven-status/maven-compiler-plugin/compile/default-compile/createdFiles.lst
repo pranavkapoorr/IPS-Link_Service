@@ -1,13 +1,12 @@
-Message_Resources\IPS_Protocol.class
 core\serial\SerialManager.class
 core\serial\SSLTcpActor.class
 protocol37\Protocol37UnformattedMessage.class
 core\serial\SerialListener$PortReader.class
+app_main\Link.class
 Message_Resources\FailedAttempt.class
 core\tcp\TcpConnectionHandlerActor.class
 Message_Resources\FinalReceipt.class
 Message_Resources\StatusMessage.class
-app_main\IPS_Link.class
 Message_Resources\Protocol37Format.class
 core\Database.class
 core\serial\SerialListener.class
@@ -15,7 +14,9 @@ core\tcp\TcpClientActor.class
 core\StatusMessageSender.class
 app_main\SerialLauncher.class
 protocol37\Protocol37ReadWriteHandler.class
+Message_Resources\ReceiptJson.class
 app_main\IPS_Launcher.class
 Message_Resources\GT37Message.class
+Message_Resources\IpsJson.class
 protocol37\ReceiptGenerator.class
 core\tcp\TcpServerActor.class

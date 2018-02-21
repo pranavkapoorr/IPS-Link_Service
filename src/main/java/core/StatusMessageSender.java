@@ -40,7 +40,8 @@ public class StatusMessageSender extends AbstractActor {
 		return receiveBuilder()
 				.match(String.class, sMsg->{
 					if(Link.wait4CardRemoval){
-					    if(sMsg.contains("CARD REMOVED")){
+					    /**ENGLISH , ITALIAN , FRENCH, SPANISH , DE , DA ,NL , PL**/
+					    if(sMsg.contains("CARD REMOVED")||sMsg.contains("CARTA ESTRATTA")||sMsg.contains("CARTE RETIREE")||sMsg.contains("TARJETA EXTRAIDA")){
 					        Link.cardRemoved = true;
 					        log.info("card removed......");
 					    }

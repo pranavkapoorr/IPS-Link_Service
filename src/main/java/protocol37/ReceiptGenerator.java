@@ -18,8 +18,10 @@ public class ReceiptGenerator extends AbstractActor{
 	StringBuffer output = new StringBuffer();
 	StringBuilder receipt = new StringBuilder();
 	private final ObjectMapper mapper;
+	private static char newLine = (char)10;
 	//private Database database = new Database();
 	private final boolean  printOnECR;
+	
 	public static Props props(boolean printOnECR){
 		return Props.create(ReceiptGenerator.class , printOnECR);
 	}
@@ -47,9 +49,9 @@ public class ReceiptGenerator extends AbstractActor{
 						receipt.append(tempReceipt);
 						/**formatting receipt adding "/n" **/
 						for(int i = 24; i< receipt.length(); i+=25){
-							receipt.insert(i,"\n");
+							receipt.insert(i,newLine);//"\n");
 						}
-						output.append("\n"+receipt+"\n;");
+						output.append(""+ newLine + receipt + newLine + ";");
 					//	parseReceipt(receipt.toString());
 						/**sends out the receipt if printOnECR is enabled ie no S message will be expected but U message will be if GT bit is on**/
 						if(printOnECR ){

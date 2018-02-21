@@ -141,8 +141,8 @@ public class TcpClientActor extends AbstractActor {
 	               }).match(String.class, s->{
 	            	   log.info("String: "+s);
 	               }).match(ConnectionClosed.class, closed->{
-	            	   log.fatal("connectin cLOSED:"+closed);
-	            	   getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CONNECTION CLOSED BY TERMINAL*****\"}"), getSelf());
+	            	   log.trace("connectin cLOSED:"+closed);
+	            	   //getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CONNECTION CLOSED BY TERMINAL*****\"}"), getSelf());
 	            	  // getContext().stop(context().parent());
 						
 	               }).match(CommandFailed.class, conn->{
