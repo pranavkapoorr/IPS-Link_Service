@@ -16,6 +16,8 @@ import java.util.concurrent.CompletionStage;
 import javax.net.ssl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.typesafe.config.ConfigFactory;
 import com.typesafe.sslconfig.akka.AkkaSSLConfig;
 import com.typesafe.sslconfig.ssl.*;
 
@@ -58,6 +60,7 @@ public class SSLTcpActor extends AbstractActor{
 	 * @return ActorRef which listens to a message and sends out to the connection
 	 **/  
 	private ActorRef startStream() throws Exception {
+	        
 		 	final ActorMaterializer materializer = ActorMaterializer.create(context().system());
 		 	final Flow<ByteString, ByteString, CompletionStage<Tcp.OutgoingConnection>> connection = Tcp.get(context().system()).outgoingConnection(serverAddress.getHostString(), serverAddress.getPort());
 		 	final Sink<ByteString, CompletionStage<Done>> sink= Sink.ignore();

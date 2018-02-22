@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>pranav.kapoor</groupId>
-  <artifactId>ips</artifactId>
-  <name>IPS-LINK_v2</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>com.ips</groupId>
+  <artifactId>AltaPay_Link_Service</artifactId>
+  <name>AltaPay Link Service</name>
+  <version>0.0.1</version>
   <developers>
     <developer>
       <name>Pranav Kapoor</name>
@@ -42,6 +42,9 @@
             </goals>
             <configuration>
               <transformers>
+                <transformer>
+                  <resource>reference.conf</resource>
+                </transformer>
                 <transformer>
                   <mainClass>app_main.IPS_Launcher</mainClass>
                 </transformer>

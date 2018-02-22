@@ -1,6 +1,10 @@
 package app_main;
 
 import java.net.InetSocketAddress;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.io.Tcp;
@@ -10,7 +14,8 @@ public class IPS_Launcher {
 
 	public static void main(String[] args) throws InterruptedException  {
 		if(isValidIP(args[0]) && isValidPort(args[1])){
-			ActorSystem system= ActorSystem.create("IPS-SYSTEM");
+		    Config config = ConfigFactory.load("application.conf");
+			ActorSystem system= ActorSystem.create("IPS-SYSTEM",config);
 			ActorRef tcpMnager =Tcp.get(system).manager();
 			ActorRef tcpServer= system.actorOf(TcpServerActor.props(tcpMnager ,new InetSocketAddress(args[0], Integer.parseInt(args[1]))),"SERVER");
 		}else{
