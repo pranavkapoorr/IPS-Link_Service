@@ -63,7 +63,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 
 						if(message.contains("0S")){
 							receiptGenerator.tell(message, getSelf());
-						}else if(message.contains("0E")||message.contains("0V")||message.contains("0A")||message.contains("0T")||message.contains("0C")||message.contains("0D")||message.contains("0U")){
+						}else if(message.contains("0E")||message.contains("0s0")||message.contains("0V")||message.contains("0A")||message.contains("0T")||message.contains("0C")||message.contains("0D")||message.contains("0U")){
 							receiptGenerator.tell(message, getSelf());
 						}
 

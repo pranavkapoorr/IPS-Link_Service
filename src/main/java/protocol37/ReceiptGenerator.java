@@ -204,6 +204,14 @@ public class ReceiptGenerator extends AbstractActor{
 						output.append("KO;Unsuccessful;"+failureReason);
 					}
 				}
+				/**checks if the received message is result of ProbePed transaction**/
+                else if(message.contains("0s0")){
+                    String terminalId = message.substring(0,8);
+                    String date = message.substring(20,30);
+                    String status = message.substring(30,31);
+                    String data = message.substring(31);
+                        output.append(terminalId+";OK;Successful;"+date+";"+status+";"+data+";");
+                }
 				/**checks if the received message is result of ADDITIONAL DATA FROM GT transaction**/
 				else if(message.contains("0U0")){
 					int length = Integer.parseInt(message.substring(16,19));

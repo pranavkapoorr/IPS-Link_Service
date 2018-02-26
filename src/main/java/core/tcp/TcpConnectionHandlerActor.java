@@ -1,30 +1,33 @@
 package core.tcp;
 
 
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Message_Resources.FailedAttempt;
+import Message_Resources.FinalReceipt;
+import Message_Resources.IpsJson;
+import Message_Resources.StatusMessage;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.actor.ReceiveTimeout;
 import akka.actor.Terminated;
-import akka.io.TcpMessage;
 import akka.io.Tcp.CommandFailed;
 import akka.io.Tcp.ConnectionClosed;
 import akka.io.Tcp.Received;
+import akka.io.TcpMessage;
 import akka.util.ByteString;
 import app_main.Link;
 import scala.concurrent.duration.Duration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import Message_Resources.FailedAttempt;
-import Message_Resources.FinalReceipt;
-import Message_Resources.IpsJson;
-import Message_Resources.StatusMessage;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 
 public class TcpConnectionHandlerActor extends AbstractActor {
@@ -82,9 +85,11 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										boolean printOnECR = false;
 	
 										/**turns printOnEcr true if prinflag received is 1 or its R req **/
-										if(resourceMap.get("printFlag").equals("1")||resourceMap.get("messageCode").equals("R")||resourceMap.get("messageCode").equals("L")){
+										if(resourceMap.get("printFlag").equals("1")||resourceMap.get("messageCode").equals("ReprintReceipt")||resourceMap.get("messageCode").equals("LastTransactionStatus")){
 											printOnECR = true;
-										}
+										}/*else if(resourceMap.get("messageCode").equals("ProbePed")){
+										    printOnECR = false;
+										}*/
 										int timeout = 95;//default timeout
 										if(resourceMap.get("timeOut")!=null && resourceMap.get("timeOut").matches("[0-9]*")
 												){
@@ -165,23 +170,35 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 		/** !=null checks that if the particular fields were in json string received Not their values!!**/
 		if(resourceMap.get("terminalIp")!= null && resourceMap.get("terminalPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("messageCode")!= null && resourceMap.get("terminalIp")!= "" && resourceMap.get("terminalPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("messageCode")!= ""){
 			log.trace("VALIDATION PASSED------> 1");
-			if((resourceMap.get("messageCode").equals("P")||resourceMap.get("messageCode").equals("A")) && (resourceMap.get("amount")!= null && resourceMap.get("GTbit")!= null && resourceMap.get("amount")!= "" && resourceMap.get("GTbit")!= "" /**&& resourceMap.get("GTmessage")!= null**/)){
+			if((resourceMap.get("messageCode").equals("Payment")||resourceMap.get("messageCode").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("GTmessage")!= null)){
 				log.trace("VALIDATION PASSED------> 2");
-				if((resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) && (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
+				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
 					log.trace("VALIDATION PASSED------> 3");
 					result = true;
 				}
-			}else if(resourceMap.get("messageCode").equals("S") && resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= "" /**&& resourceMap.get("GTmessage")!= null**/){
-				if((resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) && (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
+			}else if(resourceMap.get("messageCode").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("GTmessage")!= null){
+				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;
 				}
-			}else if(resourceMap.get("messageCode").equals("D")||resourceMap.get("messageCode").equals("M")||resourceMap.get("messageCode").equals("Z")||resourceMap.get("messageCode").equals("X")||resourceMap.get("messageCode").equals("L")||resourceMap.get("messageCode").equals("R")||resourceMap.get("messageCode").equals("T")){
+			}else if(resourceMap.get("messageCode").equals("FirstDll")||resourceMap.get("messageCode").equals("ManualDll")||resourceMap.get("messageCode").equals("ZReport")||resourceMap.get("messageCode").equals("XReport")){
 				if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;
 				}
 			}
+			else if(resourceMap.get("messageCode").equals("ProbePed")){
+                if(resourceMap.get("printFlag").equals("0")){
+                    log.trace("VALIDATION PASSED------> 2");
+                    result = true;
+                }
+            }
+			else if(resourceMap.get("messageCode").equals("LastTransactionStatus")||resourceMap.get("messageCode").equals("ReprintReceipt")||resourceMap.get("messageCode").equals("TerminalStatus")){
+                if(resourceMap.get("printFlag").equals("1")){
+                    log.trace("VALIDATION PASSED------> 2");
+                    result = true;
+                }
+            }
 		}
 		return result;
 	}
