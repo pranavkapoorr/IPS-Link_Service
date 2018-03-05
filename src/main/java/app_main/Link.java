@@ -315,8 +315,8 @@ public class Link extends AbstractActor{
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,1);
 	
-						}else if(resourceMap.get("messageCode").equals("ManualDll")){
-							log.info("received MANUAL DLL REQUEST");
+						}else if(resourceMap.get("messageCode").equals("UpdateDll")){
+							log.info("received UPDATE DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,0);
 	
