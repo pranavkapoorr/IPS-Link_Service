@@ -63,7 +63,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 					sender = getSender();
 					String messageX = msg.data().utf8String();
 					log.info("received-tcp: "+ messageX);
-					if(messageX.startsWith("{") && messageX.endsWith("}")){
+					if((messageX.startsWith("{") && messageX.endsWith("}")) || (messageX.startsWith("[") && messageX.endsWith("]"))){
 						if(IPS==null ||IPS.isTerminated()){
 							ObjectMapper mapper = new ObjectMapper();
 							String message = messageX.replaceAll("'", "\\\"");
@@ -75,8 +75,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 									log.trace("Incoming Json Validated..!");
 									InetSocketAddress statusMessageAddress;
 									InetSocketAddress terminalAddress;
-									if(validIpAndPort(resourceMap.get("terminalIp"),resourceMap.get("terminalPort"))){		
-										terminalAddress = new InetSocketAddress(resourceMap.get("terminalIp"),Integer.parseInt(resourceMap.get("terminalPort")));
+									if(validIpAndPort(resourceMap.get("pedIp"),resourceMap.get("pedPort"))){		
+										terminalAddress = new InetSocketAddress(resourceMap.get("pedIp"),Integer.parseInt(resourceMap.get("pedPort")));
 										if(validIpAndPort(resourceMap.get("statusMessageIp"),resourceMap.get("statusMessagePort"))){
 											statusMessageAddress = new InetSocketAddress(resourceMap.get("statusMessageIp"),Integer.parseInt(resourceMap.get("statusMessagePort")));	
 										}else{
@@ -85,7 +85,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										boolean printOnECR = false;
 	
 										/**turns printOnEcr true if prinflag received is 1 or its R req **/
-										if(resourceMap.get("printFlag").equals("1")||resourceMap.get("messageCode").equals("ReprintReceipt")||resourceMap.get("messageCode").equals("LastTransactionStatus")){
+										if(resourceMap.get("printFlag").equals("1")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("LastTransactionStatus")){
 											printOnECR = true;
 										}/*else if(resourceMap.get("messageCode").equals("ProbePed")){
 										    printOnECR = false;
@@ -102,7 +102,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
 										log.debug("SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
 									}else{
-										sendNack("wrong terminal Ip or port..!",true);
+										sendNack("wrong ped Ip or port..!",true);
 									}
 								}else{
 									log.error("Validation Failed..!");
@@ -168,32 +168,32 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 	private boolean isValidated(HashMap<String, String> resourceMap){
 		boolean result = false;
 		/** !=null checks that if the particular fields were in json string received Not their values!!**/
-		if(resourceMap.get("terminalIp")!= null && resourceMap.get("terminalPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("messageCode")!= null && resourceMap.get("terminalIp")!= "" && resourceMap.get("terminalPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("messageCode")!= ""){
+		if(resourceMap.get("pedIp")!= null && resourceMap.get("pedPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("operationType")!= null && resourceMap.get("pedIp")!= "" && resourceMap.get("pedPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("operationType")!= ""){
 			log.trace("VALIDATION PASSED------> 1");
-			if((resourceMap.get("messageCode").equals("Payment")||resourceMap.get("messageCode").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("GTmessage")!= null)){
+			if((resourceMap.get("operationType").equals("Payment")||resourceMap.get("operationType").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("transactionReference")!= null)){
 				log.trace("VALIDATION PASSED------> 2");
 				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
 					log.trace("VALIDATION PASSED------> 3");
 					result = true;
 				}
-			}else if(resourceMap.get("messageCode").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("GTmessage")!= null){
+			}else if(resourceMap.get("operationType").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("transactionReference")!= null){
 				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;
 				}
-			}else if(resourceMap.get("messageCode").equals("FirstDll")||resourceMap.get("messageCode").equals("UpdateDll")||resourceMap.get("messageCode").equals("ZReport")||resourceMap.get("messageCode").equals("XReport")){
+			}else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("ZReport")||resourceMap.get("operationType").equals("XReport")){
 				if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;
 				}
 			}
-			else if(resourceMap.get("messageCode").equals("ProbePed")){
+			else if(resourceMap.get("operationType").equals("ProbePed")){
                 if(resourceMap.get("printFlag").equals("0")){
                     log.trace("VALIDATION PASSED------> 2");
                     result = true;
                 }
             }
-			else if(resourceMap.get("messageCode").equals("LastTransactionStatus")||resourceMap.get("messageCode").equals("ReprintReceipt")||resourceMap.get("messageCode").equals("TerminalStatus")){
+			else if(resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("PedStatus")){
                 if(resourceMap.get("printFlag").equals("1")){
                     log.trace("VALIDATION PASSED------> 2");
                     result = true;

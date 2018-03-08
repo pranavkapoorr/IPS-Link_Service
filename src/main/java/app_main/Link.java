@@ -254,7 +254,7 @@ public class Link extends AbstractActor{
 						log.info("Successfully connected to terminal at {} cycle",connectionCycle);
 						@SuppressWarnings("unchecked")
 						HashMap<String, String> resourceMap = resourceMapX;
-						if(resourceMap.get("messageCode").equals("Payment")){
+						if(resourceMap.get("operationType").equals("Payment")){
 							log.info("received PAYMENT REQUEST");
 							/**checks if amount is between 1 pence to 100000**/
 							if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
@@ -266,7 +266,7 @@ public class Link extends AbstractActor{
     							    log.info("wait 4 card removed set to true...");
     							}
     							//if(additonaldataGT == 1){
-    								paymentAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+    								paymentAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
     							//}else if(additonaldataGT == 0){
     							//	payment(printFlag, amount,additonaldataGT);
     							//}
@@ -275,7 +275,7 @@ public class Link extends AbstractActor{
 							    getSelf().tell(PoisonPill.getInstance(), getSelf());
 							}
 	
-						}else if(resourceMap.get("messageCode").equals("Refund")){
+						}else if(resourceMap.get("operationType").equals("Refund")){
 							log.info("received REFUND REQUEST");
 							/**checks if amount is between 1 pence to 100000**/
                             if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
@@ -287,7 +287,7 @@ public class Link extends AbstractActor{
                                     log.info("wait 4 card removed set to true...");
                                 }
     							//if(additonaldataGT == 1){
-    								refundAdvanced(printFlag, amount, resourceMap.get("GTmessage"));
+    								refundAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
     							//}else if(additonaldataGT == 0){
     							//	refund(printFlag, amount,additonaldataGT);
     							//}
@@ -296,7 +296,7 @@ public class Link extends AbstractActor{
                                 getSelf().tell(PoisonPill.getInstance(), getSelf());
                             }
 	
-						}else if(resourceMap.get("messageCode").equals("Reversal")){
+						}else if(resourceMap.get("operationType").equals("Reversal")){
 							log.info("received REVERSAL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							//int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
@@ -305,46 +305,46 @@ public class Link extends AbstractActor{
                                 log.info("wait 4 card removed set to true...");
                             }
 							//if(additonaldataGT == 1){
-								reversalAdvanced(printFlag,resourceMap.get("GTmessage"));
+								reversalAdvanced(printFlag,resourceMap.get("transactionReference"));
 							//}else if(additonaldataGT == 0){
 							//	reversal(printFlag,additonaldataGT);
 							//}
 	
-						}else if(resourceMap.get("messageCode").equals("FirstDll")){
+						}else if(resourceMap.get("operationType").equals("FirstDll")){
 							log.info("received FIRST DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,1);
 	
-						}else if(resourceMap.get("messageCode").equals("UpdateDll")){
+						}else if(resourceMap.get("operationType").equals("UpdateDll")){
 							log.info("received UPDATE DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,0);
 	
-						}else if(resourceMap.get("messageCode").equals("XReport")){
+						}else if(resourceMap.get("operationType").equals("XReport")){
 							log.info("received X-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag,0);
 	
-						}else if(resourceMap.get("messageCode").equals("ZReport")){
+						}else if(resourceMap.get("operationType").equals("ZReport")){
 							log.info("received Z-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag, 1);
-						}else if(resourceMap.get("messageCode").equals("TerminalStatus")){
+						}else if(resourceMap.get("operationType").equals("PedStatus")){
 							isTerminalStatus =  true;
 							log.info("received TERMINAL-STATUS REQUEST");
 							int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
 							getTerminalStatus(printFlag);
 	
-						}else if(resourceMap.get("messageCode").equals("ReprintReceipt")){
+						}else if(resourceMap.get("operationType").equals("ReprintReceipt")){
 							log.info("received REPRINT TICKET REQUEST");
 							reprintTicket();
 	
-						}else if(resourceMap.get("messageCode").equals("LastTransactionStatus")){
+						}else if(resourceMap.get("operationType").equals("LastTransactionStatus")){
 							isLastTransStatus = true;
 							log.info("received LAST TRANSACTION STATUS REQUEST");
 							reprintTicket();
 							
-						}else if(resourceMap.get("messageCode").equals("ProbePed")){
+						}else if(resourceMap.get("operationType").equals("ProbePed")){
                             log.info("received  ProbePed REQUEST");
                             probePed();
                             

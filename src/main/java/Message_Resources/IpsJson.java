@@ -8,11 +8,13 @@ public class IpsJson {
 	@JsonProperty
 	private String printFlag ;
 	@JsonProperty
-	private String messageCode ;
+	private String operationType ;
 	@JsonProperty
 	private String amount;
 	@JsonProperty
-	private String terminalIp;
+	private String pedIp;
+	@JsonProperty
+    private String pedPort;
 	@JsonProperty
 	private String statusMessageIp;
 	@JsonProperty
@@ -20,9 +22,7 @@ public class IpsJson {
 	@JsonProperty
 	private String statusMessagePort;
 	@JsonProperty
-	private String terminalPort;
-	@JsonProperty
-	private String GTmessage;
+	private String transactionReference;
 	@JsonProperty
 	private String timeOut;
 	@JsonProperty
@@ -34,14 +34,14 @@ public class IpsJson {
 	public HashMap<String, String> getParsedMap(){
 		final HashMap<String, String> map = new HashMap<String,String>();
 		map.put("printFlag", printFlag);
-		map.put("messageCode",messageCode);
+		map.put("operationType",operationType);
 		map.put("amount",amount);
-		map.put("terminalIp",terminalIp);
+		map.put("pedIp",pedIp);
 		map.put("statusMessageIp",statusMessageIp);
 		map.put("GTbit",GTbit);
 		map.put("statusMessagePort",statusMessagePort);
-		map.put("terminalPort",terminalPort);
-		map.put("GTmessage",GTmessage);
+		map.put("pedPort",pedPort);
+		map.put("transactionReference",transactionReference);
 		map.put("timeOut",timeOut);
 		map.put("wait4CardRemoved",String.valueOf(wait4CardRemoved));
 		return map;
