@@ -8,6 +8,8 @@ public class ReceiptJson {
     @JsonProperty
     private String transactionStatus;
     @JsonProperty
+    private String transactionStatusText;
+    @JsonProperty
     private String aquirerCode;
     @JsonProperty
     private String STAN;
@@ -28,19 +30,31 @@ public class ReceiptJson {
     @JsonProperty
     private String authCode;
     @JsonProperty
+    private String transactionDate;
+    @JsonProperty
     private String transactionTime;
     @JsonProperty
     private String hostTotalAmount;
     @JsonProperty
     private String hostTotalAmountReqByHost;
     @JsonProperty
-    private String details;
+    private String cardPresentToken;
     @JsonProperty
-    private String transactionReference;
+    private String omniChannelToken;
     @JsonProperty
-    private String probeDate;
+    private String omniChannelGUID;
     @JsonProperty
-    private String probeStatus;
+    private String pedDate;
+    @JsonProperty
+    private String pedTime;
+    @JsonProperty
+    private String pedStatus;
+    @JsonProperty
+    private String firmwareVersion;
+    @JsonProperty
+    private String partNumber;
+    @JsonProperty
+    private String serialNumber;
     @JsonProperty
     private String DccAmount;
     @JsonProperty
@@ -59,6 +73,9 @@ public class ReceiptJson {
     }
     public void setTransactionStatus(String transactionStatus) {
         this.transactionStatus = transactionStatus;
+    }
+    public void setTransactionStatusText(String transactionStatusText) {
+        this.transactionStatusText = transactionStatusText;
     }
     public void setAquirerCode(String aquirerCode) {
         this.aquirerCode = aquirerCode;
@@ -90,6 +107,9 @@ public class ReceiptJson {
     public void setAuthCode(String authCode) {
         this.authCode = authCode;
     }
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
     public void setTransactionTime(String transactionTime) {
         this.transactionTime = transactionTime;
     }
@@ -99,17 +119,24 @@ public class ReceiptJson {
     public void setHostTotalAmountReqByHost(String hostTotalAmountReqByHost) {
         this.hostTotalAmountReqByHost = hostTotalAmountReqByHost;
     }
-    public void setDetails(String details) {
-        this.details = details;
+  
+    public void setPedDate(String pedDate) {
+        this.pedDate = pedDate;
     }
-    public void setTransactionReference(String transactionReference) {
-        this.transactionReference = transactionReference;
+    public void setPedTime(String pedTime) {
+        this.pedTime = pedTime;
     }
-    public void setProbeStatus(String probeStatus) {
-        this.probeStatus = probeStatus;
+    public void setPedStatus(String pedStatus) {
+        this.pedStatus = pedStatus;
     }
-    public void setProbeDate(String probeDate) {
-        this.probeDate = probeDate;
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
     public void setDccAmount(String dccAmount) {
         DccAmount = dccAmount;
@@ -128,6 +155,15 @@ public class ReceiptJson {
     }
     public void setDccTransactionCurrencyDecimal(String dccTransactionCurrencyDecimal) {
         DccTransactionCurrencyDecimal = dccTransactionCurrencyDecimal;
+    }
+    public void setCardPresentToken(String cardPresentToken) {
+        this.cardPresentToken = cardPresentToken;
+    }
+    public void setOmniChannelToken(String omniChannelToken) {
+        this.omniChannelToken = omniChannelToken;
+    }
+    public void setOmniChannelGUID(String omniChannelGUID) {
+        this.omniChannelGUID = omniChannelGUID;
     }
 
     

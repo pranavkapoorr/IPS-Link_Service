@@ -181,7 +181,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;
 				}
-			}else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("ZReport")||resourceMap.get("operationType").equals("XReport")){
+			}else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("EndOfDay")||resourceMap.get("operationType").equals("PedBalance")){
 				if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
 					log.trace("VALIDATION PASSED------> 2");
 					result = true;

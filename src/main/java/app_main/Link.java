@@ -320,18 +320,18 @@ public class Link extends AbstractActor{
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							dllFunctions(printFlag,0);
 	
-						}else if(resourceMap.get("operationType").equals("XReport")){
-							log.info("received X-report REQUEST");
+						}else if(resourceMap.get("operationType").equals("PedBalance")){
+							log.info("received PedBalance or X-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag,0);
 	
-						}else if(resourceMap.get("operationType").equals("ZReport")){
-							log.info("received Z-report REQUEST");
+						}else if(resourceMap.get("operationType").equals("EndOfDay")){
+							log.info("received EndOfDay or Z-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							Report(printFlag, 1);
 						}else if(resourceMap.get("operationType").equals("PedStatus")){
 							isTerminalStatus =  true;
-							log.info("received TERMINAL-STATUS REQUEST");
+							log.info("received Ped-STATUS REQUEST");
 							int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
 							getTerminalStatus(printFlag);
 	

@@ -1,5 +1,11 @@
 package protocol37;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +33,7 @@ public class ReceiptGenerator extends AbstractActor{
 	public static Props props(boolean printOnECR){
 		return Props.create(ReceiptGenerator.class , printOnECR);
 	}
-	public ReceiptGenerator(boolean printOnECR) {
+	private ReceiptGenerator(boolean printOnECR) {
 		this.printOnECR = printOnECR;
 		this.mapper = new ObjectMapper();
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
@@ -38,6 +44,9 @@ public class ReceiptGenerator extends AbstractActor{
 	public void preStart() throws Exception {
 	log.info("starting Receipt Generator");
 	}
+	/* (non-Javadoc)
+	 * @see akka.actor.AbstractActor#createReceive()
+	 */
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder().match(String.class, message->{
@@ -73,7 +82,7 @@ public class ReceiptGenerator extends AbstractActor{
 				}
 				/**checks if the received message is result of reversal, payment etc**/
 				else if(message.contains("0E0")){
-					String aquirerCode = "03";
+					//String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardType = message.substring(47, 48);
 					String aquirerId = message.substring(48,59);
@@ -81,7 +90,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String progressiveNum = message.substring(65,71);
 					String actionCode = message.substring(71,74);
 					receipt_Json.setTerminalId(terminalId);
-                    receipt_Json.setAquirerCode(aquirerCode);
+                    //receipt_Json.setAquirerCode(aquirerCode);
                     receipt_Json.setCardType(cardType);
                     receipt_Json.setAquirerId(aquirerId);
                     receipt_Json.setSTAN(STAN);
@@ -94,10 +103,13 @@ public class ReceiptGenerator extends AbstractActor{
 						String transacType = message.substring(31,34);
 						String authCode = message.substring(34,40);
 						String transTime = message.substring(40,47);
+						receipt_Json.setTransactionStatus("OK");
+						receipt_Json.setTransactionStatusText("Transaction Successful");
 						receipt_Json.setCardPAN(cardPan);
 						receipt_Json.setTransactionType(transacType);
 						receipt_Json.setAuthCode(authCode);
-						receipt_Json.setTransactionTime(transTime);
+						receipt_Json.setTransactionDate(getCurrentDate());
+		                receipt_Json.setTransactionTime(getCurrentTime());
 						/*	if(Link.isAdvance){
 						    
 							output.append(terminalId+";"+String.format("%08d", Link.amount)+";OK;TRANSACTION SUCCESSFUL;"+aquirerCode+";"
@@ -113,18 +125,18 @@ public class ReceiptGenerator extends AbstractActor{
 					else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("01")){
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
-						receipt_Json.setDetails(reason4Failure);
+						receipt_Json.setTransactionStatusText(reason4Failure);
 					//	database.insertData(getCurrentTime(),Integer.parseInt(terminalId), "Payment", reason4Failure);
 						//output.append(terminalId+";"+String.format("%08d", Link.amount)+";KO;TRANSACTION UNSUCCESSFUL;"+aquirerCode+";"+reason4Failure+";");
 					}else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("09")){
 					    receipt_Json.setTransactionStatus("KO");
-					    receipt_Json.setDetails("***unexpected***");
+					    receipt_Json.setTransactionStatusText("***unexpected***");
 					    //output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
 				/**checks if the received message is result of DCC transaction**/
 				else if(message.contains("0V0")){
-					String aquirerCode = "03";
+					//String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardType = message.substring(47, 48);
 					String aquirerId = message.substring(48,59);
@@ -139,7 +151,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String transactionCurrencyDecimal = message.substring(106,107);
 					receipt_Json.setTerminalId(terminalId);
 					receipt_Json.setAmount(String.valueOf(Link.amount));
-                    receipt_Json.setAquirerCode(aquirerCode);
+                    //receipt_Json.setAquirerCode(aquirerCode);
                     receipt_Json.setCardType(cardType);
                     receipt_Json.setAquirerId(aquirerId);
                     receipt_Json.setSTAN(STAN);
@@ -157,10 +169,13 @@ public class ReceiptGenerator extends AbstractActor{
 						String transacType = message.substring(31,34);
 						String authCode = message.substring(34,40);
 						String transTime = message.substring(40,47);
+						receipt_Json.setTransactionStatus("OK");
+                        receipt_Json.setTransactionStatusText("Transaction Successful");
 						receipt_Json.setCardPAN(cardPan);
                         receipt_Json.setTransactionType(transacType);
                         receipt_Json.setAuthCode(authCode);
-                        receipt_Json.setTransactionTime(transTime);
+                        receipt_Json.setTransactionDate(getCurrentDate());
+                        receipt_Json.setTransactionTime(getCurrentTime());
 						/*if(Link.isAdvance){
 							output.append(terminalId+";"+String.format("%08d", Link.amount)+";OK;TRANSACTION SUCCESSFUL;"+aquirerCode+";"
 										+" ;"+"token;"+cardPan+";"+transacType+";"+authCode+";"+transTime+";"+aquirerId+";"+STAN+";"+progressiveNum+";"
@@ -176,34 +191,36 @@ public class ReceiptGenerator extends AbstractActor{
 					else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("01")){
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
-						receipt_Json.setDetails(reason4Failure);
+						receipt_Json.setTransactionStatusText(reason4Failure);
 						//database.insertData(getCurrentTime(),Integer.parseInt(terminalId), "DCC-Payment", reason4Failure);
 						//output.append(terminalId+";"+String.format("%08d", Link.amount)+";KO;TRANSACTION UNSUCCESSFUL;"+aquirerCode+";"+reason4Failure+";");
 					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("09")){
 					    receipt_Json.setTransactionStatus("KO");
-					    receipt_Json.setDetails("**UNEXPECTED TAG**");
+					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					    //output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
 				/**checks if the received message is result of REFUND transaction**/
 				else if(message.contains("0A0")){
-					String aquirerCode = "03";
+					//String aquirerCode = "03";
 					String terminalId = message.substring(0, 8);
 					String cardPan = message.substring(12,31);
 					String transacType = message.substring(31,34);
 					String authCode = message.substring(34,40);
 					String aquirerId = message.substring(40,51);
 					String transTime = message.substring(51,58);
-					receipt_Json.setAquirerCode(aquirerCode);
+					//receipt_Json.setAquirerCode(aquirerCode);
 					receipt_Json.setTerminalId(terminalId);
 					receipt_Json.setAmount(String.valueOf(Link.amount));
 					receipt_Json.setCardPAN(cardPan);
 					receipt_Json.setTransactionType(transacType);
 					receipt_Json.setAuthCode(authCode);
 					receipt_Json.setAquirerId(aquirerId);
-					receipt_Json.setTransactionTime(transTime);
 					if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("00")){
 					    receipt_Json.setTransactionStatus("OK");
+                        receipt_Json.setTransactionStatusText("Transaction Successful");
+					    receipt_Json.setTransactionDate(getCurrentDate());
+	                    receipt_Json.setTransactionTime(getCurrentTime());
 						//database.insertData(getCurrentTime(),Integer.parseInt(terminalId), "Refund", "Successful");
 						//output.append(terminalId+";"+String.format("%08d", Link.amount)+";OK;TRANSACTION SUCCESSFUL;");
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("01")){
@@ -212,7 +229,7 @@ public class ReceiptGenerator extends AbstractActor{
 						//output.append("********************KO************");
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("09")){
 					    receipt_Json.setTransactionStatus("KO");
-					    receipt_Json.setDetails("**UNEXPECTED TAG**");
+					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					    //output.append("************UNEXPECTED**GT**TAG***");
 					}	
 				}
@@ -228,20 +245,22 @@ public class ReceiptGenerator extends AbstractActor{
 						}else{
 							receipt_Json.setTerminalId(terminalId);
 							receipt_Json.setTransactionStatus("OK");
+	                        receipt_Json.setTransactionStatusText("Transaction Successful");
 							receipt_Json.setHostTotalAmount(totalInEur);
 							receipt_Json.setActionCode(actionCode);
 						    //output.append(terminalId+";OK;Successful;"+totalInEur+";"+actionCode+";");
 						}
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("01")){
 					    receipt_Json.setTerminalId(terminalId);
-                        receipt_Json.setTransactionStatus("KO");
+					    receipt_Json.setTransactionStatus("KO");
+                        receipt_Json.setTransactionStatusText("Transaction Unsuccessful");
                         receipt_Json.setHostTotalAmount(totalInEur);
                         receipt_Json.setActionCode(actionCode);
 					    //output.append(terminalId+";KO;Unsuccessful;"+totalInEur+";"+actionCode+";");
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("09")){
 					    receipt_Json.setTerminalId(terminalId);
                         receipt_Json.setTransactionStatus("KO");
-                        receipt_Json.setDetails("**UNEXPECTED TAG**");
+                        receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
                         receipt_Json.setHostTotalAmount(totalInEur);
                         receipt_Json.setActionCode(actionCode);
 					    //output.append("************UNEXPECTED**GT**TAG***");
@@ -254,7 +273,8 @@ public class ReceiptGenerator extends AbstractActor{
 						String totalInEurRecByHost = message.substring(28,44);
 						String actionCode = message.substring(44,47);
 						receipt_Json.setTerminalId(terminalId);
-                        receipt_Json.setTransactionStatus("OK");
+						receipt_Json.setTransactionStatus("OK");
+                        receipt_Json.setTransactionStatusText("Transaction Successful");
                         receipt_Json.setHostTotalAmount(totalInEur);
                         receipt_Json.setHostTotalAmountReqByHost(totalInEurRecByHost);
                         receipt_Json.setActionCode(actionCode);
@@ -263,9 +283,9 @@ public class ReceiptGenerator extends AbstractActor{
 						String failureReason = message.substring(12,31);
 						String actionCode = message.substring(31,34);
 						 receipt_Json.setTerminalId(terminalId);
-	                        receipt_Json.setTransactionStatus("KO");
-	                        receipt_Json.setActionCode(actionCode);
-	                        receipt_Json.setDetails(failureReason);
+						 receipt_Json.setTransactionStatus("KO");
+	                     receipt_Json.setActionCode(actionCode);
+	                     receipt_Json.setTransactionStatusText(failureReason);
 						//output.append(terminalId+";KO;Unsuccessful;"+failureReason+";"+actionCode+";");
 					}
 				}
@@ -278,14 +298,15 @@ public class ReceiptGenerator extends AbstractActor{
 					receipt_Json.setSTAN(STAN);
 					receipt_Json.setProgressiveNumber(progrNum);
 					if(message.substring(message.indexOf('D')+1, message.indexOf('D')+3).equalsIgnoreCase("00")){
-						String timeData = message.substring(24,31);
-						receipt_Json.setTransactionStatus("OK");
-						receipt_Json.setDetails(timeData);
+						//String timeData = message.substring(24,31);
+					    receipt_Json.setTransactionStatus("OK");
+                        receipt_Json.setTransactionStatusText("Transaction Successful");
+						//receipt_Json.setTransactionStatusText(timeData);
 						//output.append(terminalId+";OK;Successful;"+timeData);
 					}else if(message.substring(message.indexOf('D')+1, message.indexOf('D')+3).equalsIgnoreCase("01")){
 						String failureReason = message.substring(24,48);
 						receipt_Json.setTransactionStatus("KO");
-						receipt_Json.setDetails(failureReason);
+						receipt_Json.setTransactionStatusText(failureReason);
 						//output.append("KO;Unsuccessful;"+failureReason);
 					}
 				}
@@ -297,16 +318,24 @@ public class ReceiptGenerator extends AbstractActor{
                     String data = message.substring(31);
                     receipt_Json.setTerminalId(terminalId);
                     receipt_Json.setTransactionStatus("OK");
-                    receipt_Json.setProbeDate(date);
-                    receipt_Json.setProbeStatus(status);
-                    receipt_Json.setReceipt(data);
+                    receipt_Json.setTransactionStatusText("Transaction Successful");
+                    receipt_Json.setPedDate(date.substring(0,6));
+                    receipt_Json.setPedTime(date.substring(6));
+                    receipt_Json.setPedStatus(status);
+                    receipt_Json.setFirmwareVersion(data.substring(data.indexOf("EMV")+3,data.indexOf("EMV")+3+4));
+                    receipt_Json.setPartNumber(data.substring(data.indexOf("P/N")+3,data.indexOf("P/N")+3+6));
+                    receipt_Json.setSerialNumber(data.substring(data.indexOf("S/N")+3));
                     //output.append(terminalId+";OK;Successful;"+date+";"+status+";"+data+";");
                 }
 				/**checks if the received message is result of ADDITIONAL DATA FROM GT transaction**/
 				else if(message.contains("0U0")){
 					int length = Integer.parseInt(message.substring(16,19));
 					String AdditionalGtData = message.substring(19,19+length);
-					receipt_Json.setTransactionReference(AdditionalGtData);
+					receipt_Json.setCardPresentToken(AdditionalGtData.substring(0, 19));
+					if(length>21){
+    					receipt_Json.setOmniChannelToken(AdditionalGtData.substring(20, 110));
+    					receipt_Json.setOmniChannelGUID(AdditionalGtData.substring(111));
+					}
 					//output.append(AdditionalGtData+";");
 	
 					if(!printOnECR  && Link.isAdvance){
@@ -510,20 +539,41 @@ public class ReceiptGenerator extends AbstractActor{
 			 System.out.println("Transstatus: "+transStatus);
 			 System.out.println("verf: "+verf);
 	}*/
-	/*private String[] getCurrentTime(){
+	private String getCurrentTime(){
 		LocalDateTime localDateTime = LocalDateTime.now();
 		LocalTime localTime = localDateTime.toLocalTime();
-		return new String[]{LocalDate.now().toString(),localTime.toString()};
-	}*/
-	private String lastTransStatus(String receipt){
-		if(receipt.contains("TRANSACTION")){
-			return receipt.substring(receipt.indexOf("TRANSACTION"),
-					receipt.indexOf("TRANSACTION")+20);
-		}
-		return "";
+		return localTime.format(DateTimeFormatter.ofPattern("HHmm")).toString();
+	}
+	private String getCurrentDate(){
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
+    }
+	private ReceiptJson lastTransStatus(String receipt){
+	    ReceiptJson tempJson = new ReceiptJson();
+	    String[] receiptLines = receipt.split(String.valueOf(newLine));
+	    
+	   for(int i=0;i<receiptLines.length;i++){
+	       if(receiptLines[i].contains("STAN")){
+	           tempJson.setSTAN(receiptLines[i].substring(receiptLines[i].indexOf("STAN")+"STAN".length()).trim());
+	       }else if(receiptLines[i].contains("PAN  ")){
+              tempJson.setCardPAN(receiptLines[i].substring(receiptLines[i].indexOf("PAN")+"PAN".length()).trim());
+           }else if(receiptLines[i].contains("AMOUNT:")){
+               tempJson.setAmount(receiptLines[i+1].trim());
+           }
+	       else if(receiptLines[i].contains("AMOUNT")){
+	           tempJson.setAmount(receiptLines[i].substring(receiptLines[i].indexOf("AMOUNT")+"AMOUNT".length()).trim());
+	       }else if(receiptLines[i].contains("TRANSACTION")){
+               tempJson.setTransactionStatusText(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20));
+               if(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20).contains("APPROVED")){
+                   tempJson.setTransactionStatus("OK");
+               }else{
+                   tempJson.setTransactionStatus("KO");
+               }
+           }
+	   }
+	   return tempJson;
 	}
 	
-	private void generateReceipt(StringBuffer output) throws JsonProcessingException{
+	/*private void generateReceipt(StringBuffer output) throws JsonProcessingException{
 	    log.info("generating receipt...!");
         log.trace(output.toString());
        // ReceiptJson receipt_Json = new ReceiptJson();
@@ -538,13 +588,12 @@ public class ReceiptGenerator extends AbstractActor{
         getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
     out = null;
     receipt_Json = null;
-	}
+	}*/
 	private void generateJsonReceipt(ReceiptJson receiptX) throws JsonProcessingException{
         log.info("generating receipt...!");
        // ReceiptJson receipt_Json = new ReceiptJson();
         if(Link.isLastTransStatus){
-            String status = lastTransStatus(receiptX.getReceipt());
-            receiptX.setReceipt(status);
+             receiptX = lastTransStatus(receiptX.getReceipt()); 
         }
         String out = mapper.writeValueAsString(receiptX);
         log.trace("JSON -> "+out);
