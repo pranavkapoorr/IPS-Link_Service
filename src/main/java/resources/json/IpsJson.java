@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.json;
 
 import java.util.HashMap;
 

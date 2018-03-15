@@ -13,11 +13,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Message_Resources.FinalReceipt;
-import Message_Resources.ReceiptJson;
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import app_main.Link;
+import resources.actor_message.FinalReceipt;
+import resources.json.ReceiptJson;
 
 public class ReceiptGenerator extends AbstractActor{
 	private final static Logger log = LogManager.getLogger(ReceiptGenerator.class);
@@ -42,7 +42,7 @@ public class ReceiptGenerator extends AbstractActor{
 	
 	@Override
 	public void preStart() throws Exception {
-	log.info("starting Receipt Generator");
+	log.info(getSelf().path().name()+" starting Receipt Generator");
 	}
 	/* (non-Javadoc)
 	 * @see akka.actor.AbstractActor#createReceive()
@@ -590,13 +590,13 @@ public class ReceiptGenerator extends AbstractActor{
     receipt_Json = null;
 	}*/
 	private void generateJsonReceipt(ReceiptJson receiptX) throws JsonProcessingException{
-        log.info("generating receipt...!");
+        log.info(getSelf().path().name()+" generating receipt...!");
        // ReceiptJson receipt_Json = new ReceiptJson();
         if(Link.isLastTransStatus){
              receiptX = lastTransStatus(receiptX.getReceipt()); 
         }
         String out = mapper.writeValueAsString(receiptX);
-        log.trace("JSON -> "+out);
+        log.trace(getSelf().path().name()+" JSON -> "+out);
         getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
     out = null;
     receiptX = null;
@@ -604,6 +604,6 @@ public class ReceiptGenerator extends AbstractActor{
 	
 	@Override
 	public void postStop() throws Exception {
-		log.info("stopping Receipt Generator");
+		log.info(getSelf().path().name()+" stopping Receipt Generator");
 	}
 }

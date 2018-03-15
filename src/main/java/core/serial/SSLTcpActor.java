@@ -38,7 +38,7 @@ public class SSLTcpActor extends AbstractActor{
 		       
 	@Override
 	public void preStart() throws Exception {
-		log.info("Starting TCP-Stream ACTOR");	
+		log.info(getSelf().path().name()+" Starting TCP-Stream ACTOR");	
 		streamActor = startStream();
 		}
 	 
@@ -46,14 +46,14 @@ public class SSLTcpActor extends AbstractActor{
 	public Receive createReceive() {
 			return receiveBuilder()
 						.match(ByteString.class, s->{
-							log.info("sending to tcpsslactor: "+s.utf8String());
+							log.info(getSelf().path().name()+" sending to tcpsslactor: "+s.utf8String());
 							streamActor.tell(s, getSender());
 						})
 						.build();
 	}
 	@Override
 	public void postStop() throws Exception {
-		log.info("Stopping TCP-Stream ACTOR");
+		log.info(getSelf().path().name()+" Stopping TCP-Stream ACTOR");
 	}
 		  
 	/**startStream**
@@ -72,7 +72,7 @@ public class SSLTcpActor extends AbstractActor{
 		 																				return ByteString.fromString("");
 		 																			});
 		 	final Flow<ByteString,ByteString,NotUsed> in = Flow.<ByteString>create().map(btstr->{
-		 		log.info("sending out from TCP_stream "+btstr.utf8String());
+		 		log.info(getSelf().path().name()+" sending out from TCP_stream "+btstr.utf8String());
 		 		return btstr;
 		 	});
 		 	
@@ -91,10 +91,10 @@ public class SSLTcpActor extends AbstractActor{
 			 final SSLConfigSettings config = sslConfig.config();
 			 final char[] password = "123456".toCharArray();// do not store passwords in code, read them from somewhere safe!	
 			 final KeyStore ks = KeyStore.getInstance("JKS");  
-			 log.info("loading keystore...");
+			 log.info(getSelf().path().name()+" loading keystore...");
 			 final InputStream keystore = new FileInputStream("resources/truststore.jks");
 			      if(keystore == null) {
-			    	  log.fatal("KEYSTORE NOT FOUND...!!!");
+			    	  log.fatal(getSelf().path().name()+" KEYSTORE NOT FOUND...!!!");
 			    	  throw new RuntimeException("Keystore required!");
 			      }
 			 ks.load(keystore, password);

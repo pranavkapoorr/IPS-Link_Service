@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

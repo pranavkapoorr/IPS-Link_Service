@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.actor_message;
 
 import protocol37.Protocol37UnformattedMessage;
 

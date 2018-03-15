@@ -4,24 +4,24 @@ import java.net.InetSocketAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import Message_Resources.StatusMessage;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.util.ByteString;
 import app_main.Link;
 import core.serial.SSLTcpActor;
+import resources.actor_message.StatusMessage;
 
 public class StatusMessageSender extends AbstractActor {
 	private final static Logger log = LogManager.getLogger(StatusMessageSender.class);
 	private final ActorRef statusMessageSender;
 	private final String statusMessageDetails;
-	private StatusMessageSender(InetSocketAddress statusMessageIp) {
+	private StatusMessageSender(InetSocketAddress statusMessageIp, String clientIp) {
 		if(statusMessageIp!=null){
-			this.statusMessageSender = getContext().actorOf(SSLTcpActor.props(statusMessageIp, false),"statusMessageTCP");
+			this.statusMessageSender = getContext().actorOf(SSLTcpActor.props(statusMessageIp, false),"statusMessageTCP-"+clientIp);
 			this.statusMessageDetails = statusMessageIp.getHostString()+":"+statusMessageIp.getPort();
 		}else{
-		log.info("using same channel for StatusMessages and Receipt");
+		log.info(getSelf().path().name()+" using same channel for StatusMessages and Receipt");
 		this.statusMessageSender = null;
 		this.statusMessageDetails =  null;
 		}
@@ -29,10 +29,10 @@ public class StatusMessageSender extends AbstractActor {
 	}
 	@Override
 	public void preStart() throws Exception {
-		log.trace("starting StatusMessageSender Actor");
+		log.trace(getSelf().path().name()+" starting StatusMessageSender Actor");
 	}
-	public static Props props(InetSocketAddress statusMessageIp){
-		return Props.create(StatusMessageSender.class, statusMessageIp);
+	public static Props props(InetSocketAddress statusMessageIp, String clientIp){
+		return Props.create(StatusMessageSender.class, statusMessageIp, clientIp);
 	}
 
 	@Override
@@ -43,15 +43,15 @@ public class StatusMessageSender extends AbstractActor {
 					    /**ENGLISH , ITALIAN , FRENCH, SPANISH , DE , DA ,NL , PL**/
 					    if(sMsg.contains("CARD REMOVED")||sMsg.contains("CARTA ESTRATTA")||sMsg.contains("CARTE RETIREE")||sMsg.contains("TARJETA EXTRAIDA")){
 					        Link.cardRemoved = true;
-					        log.info("card removed......");
+					        log.info(getSelf().path().name()+" card removed......");
 					    }
 					}
 					if(statusMessageDetails==null){
-						log.info("sending status message :"+sMsg);
+						log.info(getSelf().path().name()+" sending status message :"+sMsg);
 						/**sending out status message **/
 						getContext().getParent().tell(new StatusMessage(sMsg), getSelf());
 					}else{
-						log.info("sending status message to :" + statusMessageDetails);
+						log.info(getSelf().path().name()+" sending status message to :" + statusMessageDetails);
 						statusMessageSender.tell(ByteString.fromString(sMsg), getSelf());
 					}
 				})
@@ -60,7 +60,7 @@ public class StatusMessageSender extends AbstractActor {
 	
 	@Override
 	public void postStop() throws Exception {
-		log.trace("Stopping StatusMessageSender Actor");
+		log.trace(getSelf().path().name()+" Stopping StatusMessageSender Actor");
 	}
 
 }

@@ -5,13 +5,13 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import Message_Resources.GT37Message;
-import Message_Resources.Protocol37Format;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.util.ByteString;
 import core.serial.SSLTcpActor;
+import resources.actor_message.GT37Message;
+import resources.actor_message.Protocol37Format;
 
 public class Protocol37ReadWriteHandler extends AbstractActor{
 	private final static Logger log = LogManager.getLogger(Protocol37ReadWriteHandler.class);
@@ -42,7 +42,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 					/** checks if the received String is a Status Message starting with "SOH" and ending with "EOT" **/
 					if(isStatusMessage(msg)){ //if status message
 						String message = msg.substring(msg.indexOf((char)01)+1,msg.indexOf((char)04));
-						log.info("Forwarding Status Message: " + message);
+						log.info(getSelf().path().name()+" Forwarding Status Message: " + message);
 						statusMessageSender.tell("{\"statusMessage\":\""+message+"\"}", self());
 					}
 					/** checks if the received String is Acknowledgement starting with "ACK" and ending with LRC "z" **/
@@ -59,7 +59,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 						 * getsender() is the Serial Manager Actor who sends message to this Actor so Ack message is sent back to it**/
 						getSender().tell(new Protocol37Format(Protocol37UnformattedMessage.ACK()),getSelf());
 						String message = msg.substring(msg.indexOf((char)02)+1,msg.indexOf((char)03));
-						log.info("Result: " + message);
+						log.info(getSelf().path().name()+" Result: " + message);
 
 						if(message.contains("0S")){
 							receiptGenerator.tell(message, getSelf());
@@ -191,15 +191,15 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 	 * @param msg : String message coming from Terminal 
 	 * @return :true if following condition is met else false **/
 	private boolean isProtocol37ApplicationMessage(String messageFromTerminal){
-		log.info("Validating Received message calculating LRC");
+		log.info(getSelf().path().name()+" Validating Received message calculating LRC");
 		boolean result = false;
 		if((messageFromTerminal.charAt(0)==(char)02 && messageFromTerminal.charAt(messageFromTerminal.length()-2)==(char)03)){
-			log.info("STX ETX FOUND in message");
+			log.info(getSelf().path().name()+" STX ETX FOUND in message");
 			if(messageFromTerminal.charAt(messageFromTerminal.length()-1) == Protocol37Format.calcLRC_P37(messageFromTerminal.substring(0, messageFromTerminal.length()-1))){
 				result = true;
-				log.info("Validated -> matched LRC");
+				log.info(getSelf().path().name()+" Validated -> matched LRC");
 			}else{
-				log.error("Validation Failed ! -> unexpected LRC");
+				log.error(getSelf().path().name()+" Validation Failed ! -> unexpected LRC");
 			}
 		}
 		return result;

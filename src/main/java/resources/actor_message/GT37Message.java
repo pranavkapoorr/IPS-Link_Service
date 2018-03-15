@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.actor_message;
 
 public class GT37Message{
 	private final byte[] message;

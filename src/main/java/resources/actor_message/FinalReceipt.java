@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.actor_message;
 
 final public class FinalReceipt{
 	final private String message;

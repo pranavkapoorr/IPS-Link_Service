@@ -1,4 +1,4 @@
-package Message_Resources;
+package resources.actor_message;
 
 final public class StatusMessage {
 		final private String message;

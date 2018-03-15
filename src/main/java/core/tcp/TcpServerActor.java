@@ -50,7 +50,7 @@ public class TcpServerActor  extends AbstractActor {
 	    	  clientIP = conn.remoteAddress();
 	    	// if(addToVaultAndCheck(clientIP)){//for limiting incoming connections
 	        //  vault.getVault().forEach((k,v)->System.err.print("IP:"+k+"  value:"+v));
-	    	  final ActorRef handler = getContext().actorOf(TcpConnectionHandlerActor.props(clientIP),"handler"+clientIP.getHostString()+":"+clientIP.getPort());
+	    	  final ActorRef handler = getContext().actorOf(TcpConnectionHandlerActor.props(clientIP.getHostString()+":"+clientIP.getPort()),"handler-"+clientIP.getHostString()+":"+clientIP.getPort());
 	                /**
 	                 * !!NB:
 	                 * telling the aforesaid akka internal connection actor that the actor "handler"
@@ -59,9 +59,9 @@ public class TcpServerActor  extends AbstractActor {
 	                sender().tell(TcpMessage.register(handler), self());
 	    	// }
 	      })
-	      .match(InetSocketAddress.class, clientIp->{
+	      //.match(InetSocketAddress.class, clientIp->{
 	    //	  removeFromVault(clientIp);
-	      })
+	   //   })
 	      .build();
 	  }
 	/* private void removeFromVault(InetSocketAddress clientIp){

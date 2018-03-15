@@ -11,10 +11,6 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Message_Resources.FailedAttempt;
-import Message_Resources.FinalReceipt;
-import Message_Resources.IpsJson;
-import Message_Resources.StatusMessage;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.PoisonPill;
@@ -27,29 +23,33 @@ import akka.io.Tcp.Received;
 import akka.io.TcpMessage;
 import akka.util.ByteString;
 import app_main.Link;
+import resources.actor_message.FailedAttempt;
+import resources.actor_message.FinalReceipt;
+import resources.actor_message.StatusMessage;
+import resources.json.IpsJson;
 import scala.concurrent.duration.Duration;
 
 
 public class TcpConnectionHandlerActor extends AbstractActor {
 
 	private final static Logger log = LogManager.getLogger(TcpConnectionHandlerActor.class); 
-	private final InetSocketAddress clientIP;
+	private String clientIP;
 	private ActorRef sender;
 	private ActorRef IPS;
 	private volatile boolean ipsTerminated;
 	//private Database db;
-	public TcpConnectionHandlerActor(InetSocketAddress clientIP) {
+	public TcpConnectionHandlerActor(String clientIP) {
 		this.clientIP = clientIP;
 		//db = new Database();
 	}
 
-	public static Props props(InetSocketAddress clientIP) {
+	public static Props props(String clientIP) {
 		return Props.create(TcpConnectionHandlerActor.class, clientIP);
 	}
 	
 	@Override
 	public void preStart() throws Exception {
-		log.trace("starting tcp-handler");
+		log.trace(getSelf().path().name()+" starting tcp-handler");
 		ipsTerminated = false;
 		//db.insertConnection(LocalDateTime.now().toString(), clientIP.getHostString(), String.valueOf(clientIP.getPort()));
 		//TcpServerActor.clientnum ++;
@@ -62,7 +62,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(Received.class, msg->{
 					sender = getSender();
 					String messageX = msg.data().utf8String();
-					log.info("received-tcp: "+ messageX);
+					log.info(getSelf().path().name()+" received-tcp: "+ messageX);
 					if((messageX.startsWith("{") && messageX.endsWith("}")) || (messageX.startsWith("[") && messageX.endsWith("]"))){
 						if(IPS==null ||IPS.isTerminated()){
 							ObjectMapper mapper = new ObjectMapper();
@@ -72,7 +72,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 								ips_message = mapper.readValue(message, IpsJson.class);
 								HashMap<String,String> resourceMap = ips_message.getParsedMap();
 								if(isValidated(resourceMap)){
-									log.trace("Incoming Json Validated..!");
+									log.trace(getSelf().path().name()+" Incoming Json Validated..!");
 									InetSocketAddress statusMessageAddress;
 									InetSocketAddress terminalAddress;
 									if(validIpAndPort(resourceMap.get("pedIp"),resourceMap.get("pedPort"))){		
@@ -95,49 +95,49 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 												){
 											timeout = Integer.parseInt(resourceMap.get("timeOut"));
 										}
-										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR),"IPS");
+										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR,clientIP),"IPS-"+clientIP);
 										context().watch(IPS);
 										ipsTerminated = false;
 										IPS.tell(resourceMap, getSelf());
 										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
-										log.debug("SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
+										log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
 									}else{
 										sendNack("wrong ped Ip or port..!",true);
 									}
 								}else{
-									log.error("Validation Failed..!");
+									log.error(getSelf().path().name()+" Validation Failed..!");
 									sendNack("UNKNOWN REQUEST",true);
 								}
 							}catch (JsonParseException e) {
-								log.error("Parsing error: -> "+e.getMessage());
+								log.error(getSelf().path().name()+" Parsing error: -> "+e.getMessage());
 								sendNack("UNKNOWN REQUEST+",true);
 							}
 						}else{
-							log.debug("WAIT !! -> Transaction In Progress..");
+							log.debug(getSelf().path().name()+" WAIT !! -> Transaction In Progress..");
 							sendNack("WAIT !! -> Transaction In Progress..", false);
 							//sender.tell(TcpMessage.write(ByteString.fromString()), getSelf());
 						}
 					}else{
-						log.error("UNKNOWN REQUEST..!");
+						log.error(getSelf().path().name()+" UNKNOWN REQUEST..!");
 						sendNack("UNKNOWN REQUEST..!", true);
 					}
 
 				})
 				.match(FinalReceipt.class, receipt->{
-					log.info("sending out FINAL RECEIPT to "+clientIP.toString());
+					log.info(getSelf().path().name()+" sending out FINAL RECEIPT to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(receipt.getReceipt())), getSelf());
 					context().system().stop(IPS);
 					log.trace("=============================END---OF---LOG================================");
 				}).match(StatusMessage.class, statusMessage->{
-					log.info("sending out statusMessage to "+clientIP.toString());
+					log.info(getSelf().path().name()+" sending out statusMessage to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(statusMessage.getStatusMessage())), getSelf());
 				}).match(FailedAttempt.class, failedMessage->{
-					log.info("sending out FAILURE to "+clientIP.toString());
+					log.info(getSelf().path().name()+" sending out FAILURE to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(failedMessage.getMessage())), getSelf());
 				})
 				.match(String.class, s->{
 					if(s.contains("Error")){
-						log.info("sending out NACK to "+clientIP.toString()+" : "+s);  //if not ack then kill the ips actor
+						log.info(getSelf().path().name()+" sending out NACK to "+clientIP.toString()+" : "+s);  //if not ack then kill the ips actor
 					//	if(IPS!=null){
 						//	context().system().stop(IPS);
 					}
@@ -145,19 +145,19 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				})
 				.match(ReceiveTimeout.class, r -> {
 					if(!ipsTerminated){
-						log.debug("TIMEOUT.....!!");
+						log.debug(getSelf().path().name()+" TIMEOUT.....!!");
 						sendNack("Timeout..!!", false);
 						IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
 					}
-					log.trace("turning off TIMER");
+					log.trace(getSelf().path().name()+" turning off TIMER");
 					getContext().setReceiveTimeout(Duration.Undefined());
 				})
 				.match(ConnectionClosed.class, closed->{
-					log.debug("Server: Connection Closure"+closed);
+					log.debug(getSelf().path().name()+" Server: Connection Closure"+closed);
 					getContext().stop(getSelf());
 				})
 				.match(CommandFailed.class, conn->{
-					log.fatal("Server: "+conn);
+					log.fatal(getSelf().path().name()+" Server: "+conn);
 					getContext().stop(getSelf());
 				})
 				.match(Terminated.class,s->{
@@ -169,33 +169,33 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 		boolean result = false;
 		/** !=null checks that if the particular fields were in json string received Not their values!!**/
 		if(resourceMap.get("pedIp")!= null && resourceMap.get("pedPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("operationType")!= null && resourceMap.get("pedIp")!= "" && resourceMap.get("pedPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("operationType")!= ""){
-			log.trace("VALIDATION PASSED------> 1");
+			log.trace(getSelf().path().name()+" VALIDATION PASSED------> 1");
 			if((resourceMap.get("operationType").equals("Payment")||resourceMap.get("operationType").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("transactionReference")!= null)){
-				log.trace("VALIDATION PASSED------> 2");
+				log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
 				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
-					log.trace("VALIDATION PASSED------> 3");
+					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 3");
 					result = true;
 				}
 			}else if(resourceMap.get("operationType").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("transactionReference")!= null){
 				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
-					log.trace("VALIDATION PASSED------> 2");
+					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
 					result = true;
 				}
 			}else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("EndOfDay")||resourceMap.get("operationType").equals("PedBalance")){
 				if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
-					log.trace("VALIDATION PASSED------> 2");
+					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
 					result = true;
 				}
 			}
 			else if(resourceMap.get("operationType").equals("ProbePed")){
                 if(resourceMap.get("printFlag").equals("0")){
-                    log.trace("VALIDATION PASSED------> 2");
+                    log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
                     result = true;
                 }
             }
 			else if(resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("PedStatus")){
                 if(resourceMap.get("printFlag").equals("1")){
-                    log.trace("VALIDATION PASSED------> 2");
+                    log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
                     result = true;
                 }
             }
@@ -205,10 +205,10 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 	private void sendNack(String errorText , boolean endConnection){
 		String errorToSend = "{\"errorText\":\"Error -> "+errorText+"\"}";
 			getSelf().tell(errorToSend, getSelf());
-			log.info("-> sending Error Message");	
+			log.info(getSelf().path().name()+" -> sending Error Message");	
 			if(endConnection){
 				getSelf().tell(PoisonPill.getInstance(), getSelf());
-				log.error("ending connection......");
+				log.error(getSelf().path().name()+" ending connection......");
 				}
 	}
 	private boolean validIpAndPort(String Ip, String Port){
@@ -223,8 +223,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 
 	@Override
 	public void postStop() throws Exception {
-		log.trace("stopping tcp-handler");
-		getContext().parent().tell(clientIP, getSelf());
+		log.trace(getSelf().path().name()+" stopping tcp-handler");
+		//getContext().parent().tell(clientIP, getSelf());
 	//	db.removeConnection( clientIP.getHostString(), String.valueOf(clientIP.getPort()));
 		//TcpServerActor.clientnum --;
 		//System.err.println(TcpServerActor.clientnum);

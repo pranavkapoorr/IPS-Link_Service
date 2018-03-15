@@ -1,10 +1,10 @@
 package app_main;
 
-import Message_Resources.Protocol37Format;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import core.serial.SerialManager;
 import protocol37.Protocol37UnformattedMessage;
+import resources.actor_message.Protocol37Format;
 
 public class SerialLauncher {
 	public static void main(String[] args){

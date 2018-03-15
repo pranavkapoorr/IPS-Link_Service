@@ -4,8 +4,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import Message_Resources.GT37Message;
-import Message_Resources.Protocol37Format;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -15,6 +13,8 @@ import jssc.SerialPortException;
 import protocol37.Protocol37ReadWriteHandler;
 import protocol37.Protocol37UnformattedMessage;
 import protocol37.ReceiptGenerator;
+import resources.actor_message.GT37Message;
+import resources.actor_message.Protocol37Format;
 
 public class SerialManager extends AbstractActor {
 	private final static Logger log = LogManager.getLogger(SerialManager.class); 
@@ -30,7 +30,7 @@ public class SerialManager extends AbstractActor {
 	private SerialManager(String port) {
 		this.port =  new SerialPort(port);
 		log.info("starting handler");
-		this.statusMessageListener = context().actorOf(StatusMessageSender.props(null));
+		this.statusMessageListener = context().actorOf(StatusMessageSender.props(null,null));
 		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(true));//for printing
         this.handler = getContext().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator));
 		ackReceived = true;
