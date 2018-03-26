@@ -46,7 +46,7 @@
                   <resource>reference.conf</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>app_main.IPS_Launcher</mainClass>
+                  <mainClass>com.ips.ipslink.app.IPS_Launcher</mainClass>
                 </transformer>
               </transformers>
             </configuration>
