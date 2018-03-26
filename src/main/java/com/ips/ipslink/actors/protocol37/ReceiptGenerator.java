@@ -100,10 +100,12 @@ public class ReceiptGenerator extends AbstractActor{
 		                receipt_Json.setTransactionTime(getCurrentTime());
 				}
 					else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("01")){
+					    Link.isAdvance = false;
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
 						receipt_Json.setTransactionStatusText(reason4Failure);
 					}else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("09")){
+					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("***unexpected***");
 					}	
@@ -148,10 +150,12 @@ public class ReceiptGenerator extends AbstractActor{
                         receipt_Json.setTransactionDate(getCurrentDate());
                         receipt_Json.setTransactionTime(getCurrentTime());
 					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("01")){
+					    Link.isAdvance = false;
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
 						receipt_Json.setTransactionStatusText(reason4Failure);
 					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("09")){
+					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					}	
@@ -176,8 +180,10 @@ public class ReceiptGenerator extends AbstractActor{
 					    receipt_Json.setTransactionDate(getCurrentDate());
 	                    receipt_Json.setTransactionTime(getCurrentTime());
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("01")){
+					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("09")){
+					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					}	
