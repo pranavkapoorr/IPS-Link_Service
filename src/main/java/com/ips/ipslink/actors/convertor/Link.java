@@ -2,6 +2,8 @@ package com.ips.ipslink.actors.convertor;
 
 import java.net.*;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -349,6 +351,7 @@ public class Link extends AbstractActor {
 							log.info("UNKNOWN REQUEST-> sending NACK");
 						}*/
 					}else{
+					    TimeUnit.NANOSECONDS.sleep(1);
 						/***sending the received resourceMap to itself unless the connection with terminal is successful***/
 						getSelf().tell(resourceMapX, getSelf());
 						if(connectionCycle == 0){

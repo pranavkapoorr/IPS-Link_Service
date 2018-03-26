@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -276,12 +277,14 @@ public class ReceiptGenerator extends AbstractActor{
 				/**checks if the received message is result of ADDITIONAL DATA FROM GT transaction**/
 				else if(message.contains("0U0")){
 					int length = Integer.parseInt(message.substring(16,19));
-					String AdditionalGtData = message.substring(19,19+length);
-					receipt_Json.setCardPresentToken(AdditionalGtData.substring(0, 19));
-					if(length>21){
-    					receipt_Json.setOmniChannelToken(AdditionalGtData.substring(20, 110));
-    					receipt_Json.setOmniChannelGUID(AdditionalGtData.substring(111));
+					if(length>0){
+					    String AdditionalGtData = message.substring(19,19+length);
+					    receipt_Json.setCardPresentToken(AdditionalGtData.substring(0, 19));
+					    if(length>21){
+					        receipt_Json.setOmniChannelToken(AdditionalGtData.substring(20, 110));
+					        receipt_Json.setOmniChannelGUID(AdditionalGtData.substring(111));
 					}
+					    }
 	
 					if(!printOnECR  && Link.isAdvance){
 					    getSelf().tell(receipt_Json, getSelf());
@@ -297,6 +300,7 @@ public class ReceiptGenerator extends AbstractActor{
 		                if(Link.cardRemoved){
 		                    generateJsonReceipt(receiptX);
 		                }else{
+		                    TimeUnit.NANOSECONDS.sleep(1);
 		                    getSelf().tell(receiptX, getSelf());
 		                }
 		            }else{

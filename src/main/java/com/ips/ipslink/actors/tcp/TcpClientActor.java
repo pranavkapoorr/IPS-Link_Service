@@ -1,6 +1,8 @@
 package com.ips.ipslink.actors.tcp;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.*;
 
 import com.ips.ipslink.actormessages.FailedAttempt;
@@ -88,6 +90,7 @@ public class TcpClientActor extends AbstractActor {
 					        					}else{
 					        						
 					        					}
+			        							TimeUnit.NANOSECONDS.sleep(1);
 			        							getSelf().tell(msg,getSelf());
 			        							gtMessageRetryCycle++;
 			        						}
