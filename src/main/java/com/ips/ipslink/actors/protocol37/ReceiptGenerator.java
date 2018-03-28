@@ -4,19 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ips.ipslink.actormessages.FinalReceipt;
 import com.ips.ipslink.actors.convertor.Link;
 import com.ips.ipslink.marshallers.ReceiptJson;
-
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 
@@ -28,11 +26,13 @@ public class ReceiptGenerator extends AbstractActor{
 	private static char newLine = (char)10;
 	private final boolean  printOnECR;
 	private ReceiptJson receipt_Json;
+	private final HashMap<String, ArrayList<String>> languageDictionary;
 	
-	public static Props props(boolean printOnECR){
-		return Props.create(ReceiptGenerator.class , printOnECR);
+	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary){
+		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary);
 	}
-	private ReceiptGenerator(boolean printOnECR) {
+	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary) {
+	    this.languageDictionary = languageDictionary;
 		this.printOnECR = printOnECR;
 		this.mapper = new ObjectMapper();
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
@@ -79,8 +79,6 @@ public class ReceiptGenerator extends AbstractActor{
 					String progressiveNum = message.substring(65,71);
 					String actionCode = message.substring(71,74);
 					receipt_Json.setTerminalId(terminalId);
-             
-                    receipt_Json.setCardType(cardType);
                     receipt_Json.setAquirerId(aquirerId);
                     receipt_Json.setSTAN(STAN);
                     receipt_Json.setActionCode(actionCode);
@@ -127,7 +125,6 @@ public class ReceiptGenerator extends AbstractActor{
 					String transactionCurrencyDecimal = message.substring(106,107);
 					receipt_Json.setTerminalId(terminalId);
 					receipt_Json.setAmount(String.valueOf(Link.amount));
-                    receipt_Json.setCardType(cardType);
                     receipt_Json.setAquirerId(aquirerId);
                     receipt_Json.setSTAN(STAN);
                     receipt_Json.setActionCode(actionCode);
@@ -196,26 +193,37 @@ public class ReceiptGenerator extends AbstractActor{
 					String actionCode = message.substring(28,31);
 					if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("00")){
 						if(Link.isTerminalStatus){
-						    receipt_Json.setReceipt("OK;Successful");
+						    receipt_Json.setPedConnectivity("OK");
+						    receipt_Json.setGatewayConnectivity("OK");
 						}else{
 							receipt_Json.setTerminalId(terminalId);
 							receipt_Json.setTransactionStatus("OK");
 	                        receipt_Json.setTransactionStatusText("Transaction Successful");
-							receipt_Json.setHostTotalAmount(totalInEur);
+							receipt_Json.setAmount(totalInEur);
 							receipt_Json.setActionCode(actionCode);
 						}
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("01")){
-					    receipt_Json.setTerminalId(terminalId);
-					    receipt_Json.setTransactionStatus("KO");
-                        receipt_Json.setTransactionStatusText("Transaction Unsuccessful");
-                        receipt_Json.setHostTotalAmount(totalInEur);
-                        receipt_Json.setActionCode(actionCode);
+					    if(Link.isTerminalStatus){
+                            receipt_Json.setPedConnectivity("OK");
+                            receipt_Json.setGatewayConnectivity("KO");
+                        }else{
+                            receipt_Json.setTerminalId(terminalId);
+    					    receipt_Json.setTransactionStatus("KO");
+                            receipt_Json.setTransactionStatusText("Transaction Unsuccessful");
+                            receipt_Json.setAmount(totalInEur);
+                            receipt_Json.setActionCode(actionCode);
+                        }
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("09")){
-					    receipt_Json.setTerminalId(terminalId);
-                        receipt_Json.setTransactionStatus("KO");
-                        receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
-                        receipt_Json.setHostTotalAmount(totalInEur);
-                        receipt_Json.setActionCode(actionCode);
+					    if(Link.isTerminalStatus){
+                            receipt_Json.setPedConnectivity("OK");
+                            receipt_Json.setGatewayConnectivity("KO");
+                        }else{
+    					    receipt_Json.setTerminalId(terminalId);
+                            receipt_Json.setTransactionStatus("KO");
+                            receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
+                            receipt_Json.setAmount(totalInEur);
+                            receipt_Json.setActionCode(actionCode);
+                        }
 					}	
 				}
 				else if(message.contains("0C0")){
@@ -227,8 +235,8 @@ public class ReceiptGenerator extends AbstractActor{
 						receipt_Json.setTerminalId(terminalId);
 						receipt_Json.setTransactionStatus("OK");
                         receipt_Json.setTransactionStatusText("Transaction Successful");
-                        receipt_Json.setHostTotalAmount(totalInEur);
-                        receipt_Json.setHostTotalAmountReqByHost(totalInEurRecByHost);
+                        receipt_Json.setAmount(totalInEur);
+                        //receipt_Json.setHostTotalAmountReqByHost(totalInEurRecByHost);
                         receipt_Json.setActionCode(actionCode);
 					}else if(message.substring(message.indexOf('C')+1, message.indexOf('C')+3).equalsIgnoreCase("01")){
 						String failureReason = message.substring(12,31);
@@ -308,6 +316,16 @@ public class ReceiptGenerator extends AbstractActor{
 		            }
 		        })
 		 .build();
+	}
+	/**checks if receipt need to be signed finding dots and shouldn't be receipt copy**/
+	private boolean requiresSignature(String receipt){
+	    boolean result = false;
+	    if(receipt!=null){
+    	    if(receipt.contains("............") /*&& !receipt.contains("----RECEIPT---COPY---")*/){
+    	        result = true;
+    	    }
+	    }
+	    return result;
 	}
 
 	/*private void parseReceipt(String receipt){
@@ -463,11 +481,56 @@ public class ReceiptGenerator extends AbstractActor{
 	private String getCurrentDate(){
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")).toString();
     }
+	/**for parsing receipt for last transaction status**/
 	private ReceiptJson lastTransStatus(String receipt){
 	    ReceiptJson tempJson = new ReceiptJson();
 	    String[] receiptLines = receipt.split(String.valueOf(newLine));
+	    tempJson.setTransactionDate(getCurrentDate());
+	    tempJson.setTransactionTime(getCurrentTime());
+	    if(requiresSignature(receipt)){
+	        tempJson.setSignatureRequired("Y");
+	    }
+	   boolean x =  false;
 	    
+	        
+	    
+	        
+	        
+          /*  if(receipt.contains(e)){
+                tempJson.setOperationType("Payment");
+                x = true;
+            }
+        });
+	    languageDictionary.get("Payment").forEach(e->{
+            if(receipt.contains(e)){
+                tempJson.setOperationType("Payment");
+            }
+        });
+        languageDictionary.get("Refund").forEach(e->{
+            if(receipt.contains(e)){
+                tempJson.setOperationType("Refund");
+            }
+        });*/
+        
+        /**to check the first found TRANSACTION text in receipt**/
+        boolean foundTransaction = false;
 	   for(int i=0;i<receiptLines.length;i++){
+	       String receiptLine = receiptLines[i];
+	       if(!x && languageDictionary.get("Reversal").stream().anyMatch(e->receiptLine.contains(e))){
+               x = true;
+               tempJson.setOperationType("Reversal");
+           }
+       
+            if(!x && languageDictionary.get("Payment").stream().anyMatch(e->receiptLine.contains(e))){
+               x = true;
+               tempJson.setOperationType("Payment");
+           }
+       
+      
+            if(!x && languageDictionary.get("Refund").stream().anyMatch(e->receiptLine.contains(e))){
+               x = true;
+               tempJson.setOperationType("Refund");
+           }
 	       if(receiptLines[i].contains("STAN")){
 	           tempJson.setSTAN(receiptLines[i].substring(receiptLines[i].indexOf("STAN")+"STAN".length()).trim());
 	       }else if(receiptLines[i].contains("PAN  ")){
@@ -478,18 +541,25 @@ public class ReceiptGenerator extends AbstractActor{
 	       else if(receiptLines[i].contains("AMOUNT")){
 	           tempJson.setAmount(receiptLines[i].substring(receiptLines[i].indexOf("AMOUNT")+"AMOUNT".length()).trim());
 	       }else if(receiptLines[i].contains("TRANSACTION")){
-               tempJson.setTransactionStatusText(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20));
-               if(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20).contains("APPROVED")){
-                   tempJson.setTransactionStatus("OK");
-               }else{
-                   tempJson.setTransactionStatus("KO");
-               }
+	           if(!foundTransaction){
+                   tempJson.setTransactionStatusText(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20));
+                   if(receiptLines[i].substring(receiptLines[i].indexOf("TRANSACTION"),receiptLines[i].indexOf("TRANSACTION")+20).contains("APPROVED")){
+                       tempJson.setTransactionStatus("OK");
+                   }else{
+                       tempJson.setTransactionStatus("KO");
+                   }
+                   foundTransaction = true;
+	           }
            }
 	   }
 	   return tempJson;
 	}
 	private void generateJsonReceipt(ReceiptJson receiptX) throws JsonProcessingException{
         log.info(getSelf().path().name()+" generating receipt...!");
+        /**checks for signature required in receipt**/
+        if(requiresSignature(receiptX.getReceipt())){
+            receiptX.setSignatureRequired("Y");
+        }
         if(Link.isLastTransStatus){
              receiptX = lastTransStatus(receiptX.getReceipt()); 
         }

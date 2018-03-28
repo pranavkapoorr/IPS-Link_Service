@@ -2,6 +2,7 @@ package com.ips.ipslink.actors.tcp;
 
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,23 +38,21 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 	private ActorRef sender;
 	private ActorRef IPS;
 	private volatile boolean ipsTerminated;
-	//private Database db;
-	public TcpConnectionHandlerActor(String clientIP) {
+	final HashMap<String, ArrayList<String>> languageDictionary;
+	public TcpConnectionHandlerActor(String clientIP,HashMap<String, ArrayList<String>> languageDictionary) {
+	    this.languageDictionary = languageDictionary;
 		this.clientIP = clientIP;
-		//db = new Database();
 	}
 
-	public static Props props(String clientIP) {
-		return Props.create(TcpConnectionHandlerActor.class, clientIP);
+	public static Props props(String clientIP, HashMap<String, ArrayList<String>> languageDictionary) {
+		return Props.create(TcpConnectionHandlerActor.class, clientIP, languageDictionary);
 	}
 	
 	@Override
 	public void preStart() throws Exception {
+	    log.trace("=============================START---OF---LOG================================");
 		log.trace(getSelf().path().name()+" starting tcp-handler");
 		ipsTerminated = false;
-		//db.insertConnection(LocalDateTime.now().toString(), clientIP.getHostString(), String.valueOf(clientIP.getPort()));
-		//TcpServerActor.clientnum ++;
-		//System.err.println(TcpServerActor.clientnum);
 	}
 
 	@Override
@@ -95,22 +94,22 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 												){
 											timeout = Integer.parseInt(resourceMap.get("timeOut"));
 										}
-										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR,clientIP),"IPS-"+clientIP);
+										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR,clientIP , languageDictionary),"IPS-"+clientIP);
 										context().watch(IPS);
 										ipsTerminated = false;
 										IPS.tell(resourceMap, getSelf());
 										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
 										log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
 									}else{
-										sendNack("wrong ped Ip or port..!",true);
+										sendNack("WRONG PED IP OR PORT..!",true);
 									}
 								}else{
 									log.error(getSelf().path().name()+" Validation Failed..!");
-									sendNack("UNKNOWN REQUEST",true);
+									sendNack("UNKNOWN REQUEST..!",true);
 								}
 							}catch (JsonParseException e) {
 								log.error(getSelf().path().name()+" Parsing error: -> "+e.getMessage());
-								sendNack("UNKNOWN REQUEST+",true);
+								sendNack("WRONG REQUEST..!",true);
 							}
 						}else{
 							log.debug(getSelf().path().name()+" WAIT !! -> Transaction In Progress..");
@@ -119,7 +118,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 						}
 					}else{
 						log.error(getSelf().path().name()+" UNKNOWN REQUEST..!");
-						sendNack("UNKNOWN REQUEST..!", true);
+						sendNack("UNKNOWN REQUEST..JSON EXPECTED!", true);
 					}
 
 				})
@@ -127,7 +126,6 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 					log.info(getSelf().path().name()+" sending out FINAL RECEIPT to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(receipt.getReceipt())), getSelf());
 					context().system().stop(IPS);
-					log.trace("=============================END---OF---LOG================================");
 				}).match(StatusMessage.class, statusMessage->{
 					log.info(getSelf().path().name()+" sending out statusMessage to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(statusMessage.getStatusMessage())), getSelf());
@@ -153,11 +151,11 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 					getContext().setReceiveTimeout(Duration.Undefined());
 				})
 				.match(ConnectionClosed.class, closed->{
-					log.debug(getSelf().path().name()+" Server: Connection Closure"+closed);
+					log.debug(getSelf().path().name()+" Server: Connection Closure "+closed);
 					getContext().stop(getSelf());
 				})
 				.match(CommandFailed.class, conn->{
-					log.fatal(getSelf().path().name()+" Server: "+conn);
+					log.fatal(getSelf().path().name()+" Server: Connection Failed "+conn);
 					getContext().stop(getSelf());
 				})
 				.match(Terminated.class,s->{
@@ -224,10 +222,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 	@Override
 	public void postStop() throws Exception {
 		log.trace(getSelf().path().name()+" stopping tcp-handler");
-		//getContext().parent().tell(clientIP, getSelf());
-	//	db.removeConnection( clientIP.getHostString(), String.valueOf(clientIP.getPort()));
-		//TcpServerActor.clientnum --;
-		//System.err.println(TcpServerActor.clientnum);
+		log.trace("=============================END---OF---LOG================================");
 	}
 
 }

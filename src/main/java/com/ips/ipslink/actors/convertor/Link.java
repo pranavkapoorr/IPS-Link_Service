@@ -1,6 +1,7 @@
 package com.ips.ipslink.actors.convertor;
 
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,7 @@ import com.ips.ipslink.actors.protocol37.ReceiptGenerator;
 import com.ips.ipslink.actors.protocol37.StatusMessageSender;
 import com.ips.ipslink.actors.tcp.TcpClientActor;
 import com.ips.ipslink.protocol37.Protocol37UnformattedMessage;
+import com.ips.ipslink.resources.LanguageLoader;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -23,13 +25,9 @@ import akka.actor.Props;
 
 
 public class Link extends AbstractActor {
-	//private final String propertiesPath ="resources/IPS-Link.properties";
 	private final ActorRef communicationActor;
 	private final ActorRef statusMessageListener;
-	//private int printflag = 1;
-	//private Properties config= new Properties();
 	private final static Logger log = LogManager.getLogger(Link.class);
-	//private String finalReceipt;
 	private final ActorRef receiptGenerator;
 	public static volatile long amount = 0;
 	public static volatile boolean isAdvance;
@@ -41,38 +39,14 @@ public class Link extends AbstractActor {
 	private volatile int connectionCycle;
 	
 	
-
-
-
-
-
-	public static Props props(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR ,String clientIp) {
-		return Props.create(Link.class , statusMessageIp, terminalAddress, printOnECR , clientIp);
+	public static Props props(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR ,String clientIp,HashMap<String, ArrayList<String>> languageDictionary) {
+		return Props.create(Link.class , statusMessageIp, terminalAddress, printOnECR , clientIp,languageDictionary);
 	}
-	private Link(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR , String clientIp) throws InterruptedException {
-		//	try {
-		//	InputStream in=new FileInputStream(propertiesPath);
-		log.trace("=============================START---OF---LOG================================");
-		//	log.info("loading properties file");
-		//	config.load(in);
-		//	in.close();
-		//	} catch (FileNotFoundException e) {
-		//		log.fatal("not found:"+e.getMessage());
-		//	} catch (IOException e) {
-		//      log.fatal(e.getMessage());
-		//}
-		//if(config.getProperty("Connection_Type").equalsIgnoreCase("TCP_IP")){
+	private Link(InetSocketAddress statusMessageIp , InetSocketAddress terminalAddress, boolean printOnECR , String clientIp,HashMap<String, ArrayList<String>> languageDictionary) throws InterruptedException {
 		log.info(getSelf().path().name()+" setting Up Tcp Connection type");
-		this.statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp), "status_message_senderActor-"+clientIp);
-		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR),"receipt_Generator_Actor-"+clientIp);
+		this.statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp, languageDictionary), "status_message_senderActor-"+clientIp);
+		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR, languageDictionary),"receipt_Generator_Actor-"+clientIp);
 		this.communicationActor =  getContext().actorOf(TcpClientActor.props(statusMessageListener,receiptGenerator,terminalAddress, clientIp),"TcpClient-"+clientIp);
-		/*}else if(config.getProperty("Connection_Type").equalsIgnoreCase("USB")){
-			log.info("setting Up USB Connection type");
-			this.communicationActor =  getContext().actorOf(SerialManager.props(config.getProperty("COM_Port")),"Serial");
-		}else{
-			log.error("CHECK CONNECTION TYPE IN PROPERTIES FILE!!! <look for additional spaces");
-			System.exit(0);
-		}*/
 	}
 
 	@Override
@@ -110,7 +84,6 @@ public class Link extends AbstractActor {
 	public void paymentExtended(int printFlag, long amountInPence) {
 		log.info(getSelf().path().name()+" setting printing details to terminal with flag: "+printFlag);
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.printOptions(printFlag)), ActorRef.noSender());
-		//TimeUnit.MILLISECONDS.sleep(320);
 		log.info(getSelf().path().name()+" starting \"EXTENDED PAYMENT\" function");
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.paymentExtended(amountInPence)), ActorRef.noSender());
 	} 
@@ -203,45 +176,16 @@ public class Link extends AbstractActor {
 	}
 	public void useMagneticTapeCard( int readingTypeFlag) {
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.useMagneticTpeCard(readingTypeFlag)), ActorRef.noSender());
-		//talkToTerminal(terminalIp, terminalPort, sendAcknowledgement());
 	}
 	public void restampPrint( int printFlag, int ticketType){
 		log.info(getSelf().path().name()+" starting resprint stamp function");
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.restampPrint(printFlag, ticketType)), ActorRef.noSender());
-		//talkToTerminal(terminalIp, terminalPort, sendAcknowledgement());
 	}
 	public void startLocalTelephone(long speed_in_bps){
 		log.info(getSelf().path().name()+" starting startLocalTelephone function");
 		communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.startLocalTelephone(speed_in_bps)), ActorRef.noSender());
-		//talkToTerminal(terminalIp, terminalPort, sendAcknowledgement());
 	}
-	/*private boolean isIPSRequest(String request){//not used
-		boolean result = false;
-		if(request.charAt(0)=='p' && request.charAt(request.length()-2)=='k'){
-			log.debug("found starting and ending bits");
-			String message = request.substring(0, request.length()-1);
-			//System.err.println(message);
-			//System.err.println(request);
-			if(calcIpsLRC(message)==request.charAt(request.length()-1)){
-				log.debug("found LRC and is valid");
-				result = true;
-			}
-		}
-		return result;
-	}*/
-	/**calcLRC 
-	 * calculates LRC by Xoring all the bits of message 
-	 * @param msg is the message for which lrc is calculated;
-	 * @return Lrc character;
-	 */
-/*	public static char calcIpsLRC(String msg) {//not used
-		int checksum=100;
-		for (int i = 0; i < msg.length(); i++){
-			checksum ^= msg.charAt(i);
-		}
-		return (char)checksum;
-	}*/
-
+	
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
@@ -256,18 +200,13 @@ public class Link extends AbstractActor {
 							if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
     							long amount = Integer.parseInt((String) resourceMap.get("amount"));
     							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-    							//int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
     							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
     							    wait4CardRemoval = true;
     							    log.info(getSelf().path().name()+" wait 4 card removed set to true...");
     							}
-    							//if(additonaldataGT == 1){
     								paymentAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
-    							//}else if(additonaldataGT == 0){
-    							//	payment(printFlag, amount,additonaldataGT);
-    							//}
 							}else{
-							    getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->Amount should be between 10 to 10000000\"}"), getSelf());
+							    getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
 							    getSelf().tell(PoisonPill.getInstance(), getSelf());
 							}
 	
@@ -277,35 +216,26 @@ public class Link extends AbstractActor {
                             if(resourceMap.get("amount").length()>0 && resourceMap.get("amount").length()<9){
     							long amount = Integer.parseInt((String) resourceMap.get("amount"));
     							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-    						//	int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
     							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
                                     wait4CardRemoval = true;
                                     log.info(getSelf().path().name()+" wait 4 card removed set to true...");
                                 }
-    							//if(additonaldataGT == 1){
     								refundAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
-    							//}else if(additonaldataGT == 0){
-    							//	refund(printFlag, amount,additonaldataGT);
-    							//}
+    							
                             }else{
-                                getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->Amount should be between 10 to 10000000\"}"), getSelf());
+                                getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
                                 getSelf().tell(PoisonPill.getInstance(), getSelf());
                             }
 	
 						}else if(resourceMap.get("operationType").equals("Reversal")){
 							log.info(getSelf().path().name()+" received REVERSAL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
-							//int additonaldataGT = Integer.parseInt((String) resourceMap.get("GTbit"));
 							if(resourceMap.get("wait4CardRemoved")!=null && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
                                 wait4CardRemoval = true;
                                 log.info(getSelf().path().name()+" wait 4 card removed set to true...");
                             }
-							//if(additonaldataGT == 1){
 								reversalAdvanced(printFlag,resourceMap.get("transactionReference"));
-							//}else if(additonaldataGT == 0){
-							//	reversal(printFlag,additonaldataGT);
-							//}
-	
+						
 						}else if(resourceMap.get("operationType").equals("FirstDll")){
 							log.info(getSelf().path().name()+" received FIRST DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
@@ -345,11 +275,7 @@ public class Link extends AbstractActor {
                             probePed();
                             
                         }
-						/*else {
-							String NACK = String.valueOf((char)21);
-							context().parent().tell(NACK+calcIpsLRC(NACK), getSelf());
-							log.info("UNKNOWN REQUEST-> sending NACK");
-						}*/
+						
 					}else{
 					    TimeUnit.NANOSECONDS.sleep(1);
 						/***sending the received resourceMap to itself unless the connection with terminal is successful***/
@@ -364,16 +290,16 @@ public class Link extends AbstractActor {
 
 				.match(FinalReceipt.class, r->{
 					context().parent().tell(r, getSelf());
-					//System.err.println(finalReceipt);
+					
 				})
 				.match(FailedAttempt.class, f->{
 					context().parent().tell(f, getSelf());
 					context().stop(getSelf());
-					//System.err.println(finalReceipt);
+					
 				})
 				.match(StatusMessage.class, sM->{
 					context().parent().tell(sM, getSelf());
-					//System.err.println(finalReceipt);
+					
 				}).build();
 	}
 	

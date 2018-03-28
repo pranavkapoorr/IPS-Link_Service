@@ -31,8 +31,8 @@ public class SerialManager extends AbstractActor {
 	private SerialManager(String port) {
 		this.port =  new SerialPort(port);
 		log.info("starting handler");
-		this.statusMessageListener = context().actorOf(StatusMessageSender.props(null,null));
-		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(true));//for printing
+		this.statusMessageListener = context().actorOf(StatusMessageSender.props(null,null,null));
+		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(true,null));//for printing
         this.handler = getContext().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator));
 		ackReceived = true;
         log.info("ackReceived set to allow first message to be sent to terminal");

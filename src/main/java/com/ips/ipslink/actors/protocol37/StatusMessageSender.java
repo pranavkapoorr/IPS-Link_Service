@@ -1,6 +1,9 @@
 package com.ips.ipslink.actors.protocol37;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,8 +20,14 @@ public class StatusMessageSender extends AbstractActor {
 	private final static Logger log = LogManager.getLogger(StatusMessageSender.class);
 	private final ActorRef statusMessageSender;
 	private final String statusMessageDetails;
-	private StatusMessageSender(InetSocketAddress statusMessageIp, String clientIp) {
-		if(statusMessageIp!=null){
+	private ArrayList<String> removeCardDictionary;
+	
+	public static Props props(InetSocketAddress statusMessageIp, String clientIp, HashMap<String, ArrayList<String>> languageDictionary){
+        return Props.create(StatusMessageSender.class, statusMessageIp, clientIp,languageDictionary);
+    }
+	private StatusMessageSender(InetSocketAddress statusMessageIp, String clientIp,HashMap<String, ArrayList<String>> languageDictionary) {
+		removeCardDictionary = languageDictionary.get("Card_Removed");
+	    if(statusMessageIp!=null){
 			this.statusMessageSender = getContext().actorOf(SSLTcpActor.props(statusMessageIp, false),"statusMessageTCP-"+clientIp);
 			this.statusMessageDetails = statusMessageIp.getHostString()+":"+statusMessageIp.getPort();
 		}else{
@@ -32,9 +41,7 @@ public class StatusMessageSender extends AbstractActor {
 	public void preStart() throws Exception {
 		log.trace(getSelf().path().name()+" starting StatusMessageSender Actor");
 	}
-	public static Props props(InetSocketAddress statusMessageIp, String clientIp){
-		return Props.create(StatusMessageSender.class, statusMessageIp, clientIp);
-	}
+	
 
 	@Override
 	public Receive createReceive() {
@@ -42,10 +49,16 @@ public class StatusMessageSender extends AbstractActor {
 				.match(String.class, sMsg->{
 					if(Link.wait4CardRemoval){
 					    /**ENGLISH , ITALIAN , FRENCH, SPANISH , DE , DA ,NL , PL**/
-					    if(sMsg.contains("CARD REMOVED")||sMsg.contains("CARTA ESTRATTA")||sMsg.contains("CARTE RETIREE")||sMsg.contains("TARJETA EXTRAIDA")){
+					    removeCardDictionary.forEach(e->{
+					        if(sMsg.contains(e)){
+					            Link.cardRemoved = true;
+	                            log.info(getSelf().path().name()+" card removed......"+e);
+					        }
+					                });
+					   /* if(sMsg.contains("CARD REMOVED")||sMsg.contains("CARTA ESTRATTA")||sMsg.contains("CARTE RETIREE")||sMsg.contains("TARJETA EXTRAIDA")){
 					        Link.cardRemoved = true;
 					        log.info(getSelf().path().name()+" card removed......");
-					    }
+					    }*/
 					}
 					if(statusMessageDetails==null){
 						log.info(getSelf().path().name()+" sending status message :"+sMsg);

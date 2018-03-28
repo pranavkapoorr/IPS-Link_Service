@@ -9,18 +9,20 @@ public class ReceiptJson {
     private String transactionStatus;
     @JsonProperty
     private String transactionStatusText;
-    @JsonProperty
-    private String aquirerCode;
+   // @JsonProperty
+   // private String aquirerCode;
     @JsonProperty
     private String STAN;
     @JsonProperty
     private String amount;
     @JsonProperty
+    private String operationType;
+    @JsonProperty
     private String transactionType;
     @JsonProperty
     private String aquirerId;
-    @JsonProperty
-    private String cardType;
+    //@JsonProperty
+    //private String cardType;
     @JsonProperty
     private String cardPAN;
     @JsonProperty
@@ -33,10 +35,10 @@ public class ReceiptJson {
     private String transactionDate;
     @JsonProperty
     private String transactionTime;
-    @JsonProperty
+/*    @JsonProperty
     private String hostTotalAmount;
     @JsonProperty
-    private String hostTotalAmountReqByHost;
+    private String hostTotalAmountReqByHost;*/
     @JsonProperty
     private String cardPresentToken;
     @JsonProperty
@@ -67,7 +69,22 @@ public class ReceiptJson {
     private String DccTransactionAmount;
     @JsonProperty
     private String DccTransactionCurrencyDecimal;
+    @JsonProperty
+    private String signatureRequired; 
+    @JsonProperty
+    private String pedConnectivity;
+    @JsonProperty
+    private String gatewayConnectivity;
    
+    public void setPedConnectivity(String pedConnectivity) {
+        this.pedConnectivity = pedConnectivity;
+    }
+    public void setGatewayConnectivity(String gatewayConnectivity) {
+        this.gatewayConnectivity = gatewayConnectivity;
+    }
+    public void setSignatureRequired(String signatureRequired) {
+        this.signatureRequired = signatureRequired;
+    }
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
     }
@@ -77,9 +94,9 @@ public class ReceiptJson {
     public void setTransactionStatusText(String transactionStatusText) {
         this.transactionStatusText = transactionStatusText;
     }
-    public void setAquirerCode(String aquirerCode) {
+   /* public void setAquirerCode(String aquirerCode) {
         this.aquirerCode = aquirerCode;
-    }
+    }*/
     public void setSTAN(String sTAN) {
         STAN = sTAN;
     }
@@ -95,9 +112,9 @@ public class ReceiptJson {
     public void setAquirerId(String aquirerId) {
         this.aquirerId = aquirerId;
     }
-    public void setCardType(String cardType) {
+   /* public void setCardType(String cardType) {
         this.cardType = cardType;
-    }
+    }*/
     public void setActionCode(String actionCode) {
         this.actionCode = actionCode;
     }
@@ -113,12 +130,12 @@ public class ReceiptJson {
     public void setTransactionTime(String transactionTime) {
         this.transactionTime = transactionTime;
     }
-    public void setHostTotalAmount(String hostTotalAmount) {
+   /* public void setHostTotalAmount(String hostTotalAmount) {
         this.hostTotalAmount = hostTotalAmount;
     }
     public void setHostTotalAmountReqByHost(String hostTotalAmountReqByHost) {
         this.hostTotalAmountReqByHost = hostTotalAmountReqByHost;
-    }
+    }*/
   
     public void setPedDate(String pedDate) {
         this.pedDate = pedDate;
@@ -164,6 +181,9 @@ public class ReceiptJson {
     }
     public void setOmniChannelGUID(String omniChannelGUID) {
         this.omniChannelGUID = omniChannelGUID;
+    }
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     
