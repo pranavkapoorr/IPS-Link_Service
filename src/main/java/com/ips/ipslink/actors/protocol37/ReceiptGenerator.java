@@ -565,7 +565,8 @@ public class ReceiptGenerator extends AbstractActor{
         }
         String out = mapper.writeValueAsString(receiptX);
         log.trace(getSelf().path().name()+" JSON -> "+out);
-        getContext().getParent().tell(new FinalReceipt(out), getSelf()); ///writing out the receipt
+        
+        getContext().getParent().tell(new FinalReceipt(out.replace("\\n", String.valueOf(newLine))), getSelf()); ///writing out the receipt
     out = null;
     receiptX = null;
     }
