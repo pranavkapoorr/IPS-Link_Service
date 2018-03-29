@@ -101,24 +101,24 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
 										log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
 									}else{
-										sendNack("WRONG PED IP OR PORT..!",true);
+										sendNack("06","WRONG PED IP OR PORT..!",true);
 									}
 								}else{
 									log.error(getSelf().path().name()+" Validation Failed..!");
-									sendNack("UNKNOWN REQUEST..!",true);
+									sendNack("02","UNKNOWN REQUEST..!",true);
 								}
 							}catch (JsonParseException e) {
 								log.error(getSelf().path().name()+" Parsing error: -> "+e.getMessage());
-								sendNack("WRONG REQUEST..!",true);
+								sendNack("01","WRONG REQUEST..!",true);
 							}
 						}else{
 							log.debug(getSelf().path().name()+" WAIT !! -> Transaction In Progress..");
-							sendNack("WAIT !! -> Transaction In Progress..", false);
+							sendNack("08","WAIT !! -> Transaction In Progress..", false);
 							//sender.tell(TcpMessage.write(ByteString.fromString()), getSelf());
 						}
 					}else{
 						log.error(getSelf().path().name()+" UNKNOWN REQUEST..!");
-						sendNack("UNKNOWN REQUEST..JSON EXPECTED!", true);
+						sendNack("00","UNKNOWN REQUEST..JSON EXPECTED!", true);
 					}
 
 				})
@@ -144,7 +144,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(ReceiveTimeout.class, r -> {
 					if(!ipsTerminated){
 						log.debug(getSelf().path().name()+" TIMEOUT.....!!");
-						sendNack("Timeout..!!", false);
+						sendNack("09","Timeout..!!", false);
 						IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
 					}
 					log.trace(getSelf().path().name()+" turning off TIMER");
@@ -200,8 +200,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 		}
 		return result;
 	}
-	private void sendNack(String errorText , boolean endConnection){
-		String errorToSend = "{\"errorText\":\"Error -> "+errorText+"\"}";
+	private void sendNack(String errorCode, String errorText , boolean endConnection){
+		String errorToSend = "{\"errorCode\":\""+errorCode+"\",\"errorText\":\"Error -> "+errorText+"\"}";
 			getSelf().tell(errorToSend, getSelf());
 			log.info(getSelf().path().name()+" -> sending Error Message");	
 			if(endConnection){

@@ -50,7 +50,7 @@ public class TcpClientActor extends AbstractActor {
 		return receiveBuilder()
 				.match(CommandFailed.class, conn->{
 					log.fatal(getSelf().path().name()+" connectin Failed:"+conn);
-					getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error -> CHECK PED CONNECTIVITY AND ADDRESS\"}"), getSelf());
+					getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"03\"\"errorText\":\"Error -> CHECK PED CONNECTIVITY AND ADDRESS\"}"), getSelf());
 					getContext().stop(getSelf());
 					//getContext().stop(getContext().getParent());
 				})
@@ -111,7 +111,7 @@ public class TcpClientActor extends AbstractActor {
 					        					}
 					        					else if(retryCycle > 100000000){
 					        						log.fatal(getSelf().path().name()+" TIMEOUT WAITING ACK");
-					        						getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error -> CHECK PED CONNECTIVITY\"}"), getSelf());
+					        						getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"04\"\"errorText\":\"Error -> CHECK PED CONNECTIVITY\"}"), getSelf());
 					        						getContext().stop(getContext().parent());
 					        					}
 					        					else{	
@@ -153,7 +153,7 @@ public class TcpClientActor extends AbstractActor {
 						
 	               }).match(CommandFailed.class, conn->{
 						log.fatal(getSelf().path().name()+" connectin Failed with ped: "+conn);
-						getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error -> CONNECTION WITH PED FAILED\"}"), getSelf());
+						getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"05\"\"errorText\":\"Error -> CONNECTION WITH PED FAILED\"}"), getSelf());
 						getContext().stop(getContext().parent());
 						
 					})
