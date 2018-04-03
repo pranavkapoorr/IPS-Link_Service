@@ -1,6 +1,6 @@
 # AltaPay-Link_Service
-
-[Valitor](http://www.valitor.com) is a renowed name in the European Payment Industry. [International Payment Services Ltd.](http://ips-inter.com), a subcompany of Valitor has come up with new product to ease the payment industry tasks.
+Services Inspired implementation of IPS-LINK.
+AltaPay-Link-Service is the new service based solution of [International Payment Services Ltd.](http://ips-inter.com) making integration with the Payment device easier.
 This solution acts as the "Link" between the EPOS and the Payment Device. This solution runs as tcp service which accepts the various function requests as Json string and generates a Json response with various fields giving information about the transaction made.
 
  It provides various operations that can be done on the payment device using it. Some of the functionalities it provides are:
@@ -55,4 +55,4 @@ To get the EPOS go here -> [AltaPay_Epos](https://github.com/pranavkapoorr/AltaP
 
 ## Authors
 
-* **Pranav Kapoor** - *Initial work* - [GITHUB](https://github.com/pranavkapoorr)
+* **Pranav Kapoor** - *Initial work* - [pranavkapoor](https://github.com/pranavkapoorr)
