@@ -1,5 +1,5 @@
 # AltaPay-Link_Service
-Services Inspired implementation of IPS-LINK.
+
 AltaPay-Link-Service is the new service based solution of [International Payment Services Ltd.](http://ips-inter.com) making integration with the Payment device easier.
 This solution acts as the "Link" between the EPOS and the Payment Device. This solution runs as tcp service which accepts the various function requests as Json string and generates a Json response with various fields giving information about the transaction made.
 
