@@ -206,7 +206,7 @@ public class Link extends AbstractActor {
     							}
     								paymentAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
 							}else{
-							    getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"07\"\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
+							    getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"07\",\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
 							    getSelf().tell(PoisonPill.getInstance(), getSelf());
 							}
 	
@@ -223,7 +223,7 @@ public class Link extends AbstractActor {
     								refundAdvanced(printFlag, amount, resourceMap.get("transactionReference"));
     							
                             }else{
-                                getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"07\"\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
+                                getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"07\",\"errorText\":\"Error -> Amount should be between 10 to 10000000\"}"), getSelf());
                                 getSelf().tell(PoisonPill.getInstance(), getSelf());
                             }
 	
