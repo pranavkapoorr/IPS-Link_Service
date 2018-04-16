@@ -16,6 +16,7 @@ import com.ips.altapaylink.actormessages.FinalReceipt;
 import com.ips.altapaylink.actormessages.StatusMessage;
 import com.ips.altapaylink.actors.convertor.Link;
 import com.ips.altapaylink.marshallers.RequestJson;
+import com.ips.altapaylink.resources.SharedResources;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -70,13 +71,13 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 							try{
 								ips_message = mapper.readValue(message, RequestJson.class);
 								HashMap<String,String> resourceMap = ips_message.getParsedMap();
-								if(isValidated(resourceMap)){
+								if(SharedResources.isValidatedIPSreq(log, getSelf(), resourceMap)){
 									log.trace(getSelf().path().name()+" Incoming Json Validated..!");
 									InetSocketAddress statusMessageAddress;
 									InetSocketAddress terminalAddress;
-									if(validIpAndPort(resourceMap.get("pedIp"),resourceMap.get("pedPort"))){		
+									if(SharedResources.isValidIP(resourceMap.get("pedIp")) && SharedResources.isValidPort(resourceMap.get("pedPort"))){		
 										terminalAddress = new InetSocketAddress(resourceMap.get("pedIp"),Integer.parseInt(resourceMap.get("pedPort")));
-										if(validIpAndPort(resourceMap.get("statusMessageIp"),resourceMap.get("statusMessagePort"))){
+										if(SharedResources.isValidIP(resourceMap.get("statusMessageIp")) && SharedResources.isValidPort(resourceMap.get("statusMessagePort"))){
 											statusMessageAddress = new InetSocketAddress(resourceMap.get("statusMessageIp"),Integer.parseInt(resourceMap.get("statusMessagePort")));	
 										}else{
 											statusMessageAddress = null;
@@ -101,24 +102,24 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
 										log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
 									}else{
-										sendNack("06","WRONG PED IP OR PORT..!",true);
+									    SharedResources.sendNack(log,getSelf(),"06","WRONG PED IP OR PORT..!",true);
 									}
 								}else{
 									log.error(getSelf().path().name()+" Validation Failed..!");
-									sendNack("02","UNKNOWN REQUEST..!",true);
+									SharedResources.sendNack(log,getSelf(),"02","UNKNOWN REQUEST..!",true);
 								}
 							}catch (JsonParseException e) {
 								log.error(getSelf().path().name()+" Parsing error: -> "+e.getMessage());
-								sendNack("01","WRONG REQUEST..!",true);
+								SharedResources.sendNack(log,getSelf(),"01","WRONG REQUEST..!",true);
 							}
 						}else{
 							log.debug(getSelf().path().name()+" WAIT !! -> Transaction In Progress..");
-							sendNack("08","WAIT !! -> Transaction In Progress..", false);
+							SharedResources.sendNack(log,getSelf(),"08","WAIT !! -> Transaction In Progress..", false);
 							//sender.tell(TcpMessage.write(ByteString.fromString()), getSelf());
 						}
 					}else{
 						log.error(getSelf().path().name()+" UNKNOWN REQUEST..!");
-						sendNack("00","UNKNOWN REQUEST..JSON EXPECTED!", true);
+						SharedResources.sendNack(log,getSelf(),"00","UNKNOWN REQUEST..JSON EXPECTED!", true);
 					}
 
 				})
@@ -144,7 +145,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(ReceiveTimeout.class, r -> {
 					if(!ipsTerminated){
 						log.debug(getSelf().path().name()+" TIMEOUT.....!!");
-						sendNack("09","Timeout..!!", false);
+						SharedResources.sendNack(log,getSelf(),"09","Timeout..!!", false);
 						IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
 					}
 					log.trace(getSelf().path().name()+" turning off TIMER");
@@ -162,61 +163,6 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 					ipsTerminated = s.existenceConfirmed();
 				})
 				.build();
-	}
-	private boolean isValidated(HashMap<String, String> resourceMap){
-		boolean result = false;
-		/** !=null checks that if the particular fields were in json string received Not their values!!**/
-		if(resourceMap.get("pedIp")!= null && resourceMap.get("pedPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("operationType")!= null && resourceMap.get("pedIp")!= "" && resourceMap.get("pedPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("operationType")!= ""){
-			log.trace(getSelf().path().name()+" VALIDATION PASSED------> 1");
-			if((resourceMap.get("operationType").equals("Payment")||resourceMap.get("operationType").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("transactionReference")!= null)){
-				log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
-				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
-					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 3");
-					result = true;
-				}
-			}else if(resourceMap.get("operationType").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("transactionReference")!= null){
-				if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
-					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
-					result = true;
-				}
-			}else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("EndOfDay")||resourceMap.get("operationType").equals("PedBalance")){
-				if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
-					log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
-					result = true;
-				}
-			}
-			else if(resourceMap.get("operationType").equals("ProbePed")){
-                if(resourceMap.get("printFlag").equals("0")){
-                    log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
-                }
-            }
-			else if(resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("PedStatus")){
-                if(resourceMap.get("printFlag").equals("1")){
-                    log.trace(getSelf().path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
-                }
-            }
-		}
-		return result;
-	}
-	private void sendNack(String errorCode, String errorText , boolean endConnection){
-		String errorToSend = "{\"errorCode\":\""+errorCode+"\",\"errorText\":\"Error -> "+errorText+"\"}";
-			getSelf().tell(errorToSend, getSelf());
-			log.info(getSelf().path().name()+" -> sending Error Message");	
-			if(endConnection){
-				getSelf().tell(PoisonPill.getInstance(), getSelf());
-				log.error(getSelf().path().name()+" ending connection......");
-				}
-	}
-	private boolean validIpAndPort(String Ip, String Port){
-		boolean result = false;
-		if((Ip!=null||Port!=null) && (Ip!=""||Port!="")){
-			if(Ip.matches("[0-9.]*") && Port.matches("[0-9]*")){
-				result =  true;
-			}
-		}
-		return result;
 	}
 
 	@Override

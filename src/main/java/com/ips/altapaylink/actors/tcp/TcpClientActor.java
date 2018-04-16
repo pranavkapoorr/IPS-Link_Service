@@ -67,7 +67,6 @@ public class TcpClientActor extends AbstractActor {
 	 private Receive connected(final ActorRef sender) {
 	        return receiveBuilder()
 	        		.match(Protocol37Format.class, msg->{
-	        		//	log.info("in tcp now : "+ msg.getMessageToSend() );
 	        			//converts message to byteString
 	        			ByteString string= ByteString.fromString(msg.getFormattedMessageToSend());
 	        			//forward if message is ACK to be sent
@@ -114,10 +113,6 @@ public class TcpClientActor extends AbstractActor {
 					        						getContext().getParent().tell(new FailedAttempt("{\"errorCode\":\"04\",\"errorText\":\"Error -> CHECK PED CONNECTIVITY\"}"), getSelf());
 					        						getContext().stop(getContext().parent());
 					        					}
-					        					else{	
-						        					//	log.debug("retry Cycle -> "+retryCycle);
-						        						//TimeUnit.MILLISECONDS.sleep(60); //ESTIMATED TIME FOR RECEIVING ACK
-						        					}
 					        					//sending same message to itself unless ack is received
 					        					getSelf().tell(msg,getSelf());
 					        					retryCycle++;
@@ -133,8 +128,6 @@ public class TcpClientActor extends AbstractActor {
 		        		 }
 	        			})
 	               .match(Received.class, msg->{
-	            	  // String message = msg.data().utf8String();
-	            	//   log.info("received-tcp: "+ message);
 	            	   if(msg.data().utf8String().equalsIgnoreCase(Protocol37UnformattedMessage.ACK())){
 	            		   log.info(getSelf().path().name()+" ACK");
 	            		   log.info(getSelf().path().name()+" setting ackReceived to TRUE as ACK received ");
@@ -148,8 +141,6 @@ public class TcpClientActor extends AbstractActor {
 	            	   log.info(getSelf().path().name()+" String: "+s);
 	               }).match(ConnectionClosed.class, closed->{
 	            	   log.trace(getSelf().path().name()+" connectin cLOSED with ped: "+closed);
-	            	   //getContext().getParent().tell(new FailedAttempt("{\"errorText\":\"Error ->*****CONNECTION CLOSED BY TERMINAL*****\"}"), getSelf());
-	            	  // getContext().stop(context().parent());
 						
 	               }).match(CommandFailed.class, conn->{
 						log.fatal(getSelf().path().name()+" connectin Failed with ped: "+conn);
