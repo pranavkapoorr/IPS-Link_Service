@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import com.ips.altapaylink.actormessages.Protocol37Format;
 import akka.actor.ActorRef;
 
-public class Protocol37Resources {
+public class Protocol37ReadWrite {
 
 
     /**isACK

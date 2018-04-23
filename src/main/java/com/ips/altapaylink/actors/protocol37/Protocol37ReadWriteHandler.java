@@ -16,7 +16,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 	private String terminalIdX;
 	private int CYCLE=1;
 	private boolean enableSSL = true;
-	private Protocol37Resources p37resources;
+	private Protocol37ReadWrite p37resources;
 	public static Props props(ActorRef statusMessageListener, ActorRef receiptGenerator){
 		return Props.create(Protocol37ReadWriteHandler.class , statusMessageListener, receiptGenerator);
 	}
@@ -28,7 +28,7 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 
 	@Override
 	public void preStart() throws Exception {
-	    this.p37resources = new Protocol37Resources();
+	    this.p37resources = new Protocol37ReadWrite();
 	}
 	
 	@Override
