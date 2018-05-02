@@ -23,6 +23,7 @@ public class Link extends AbstractActor {
 	public static volatile boolean sendToTerminal;
 	public static volatile boolean wait4CardRemoval;
 	public static volatile boolean cardRemoved;
+	public static volatile boolean receiptGenerated;
 	private volatile int connectionCycle;
 	private Protocol37 p37;
 	
@@ -45,6 +46,7 @@ public class Link extends AbstractActor {
 		isTerminalStatus = false;
 		isLastTransStatus = false;
 		sendToTerminal = false;
+		receiptGenerated = false;
 		connectionCycle = 0;
 		p37 = new Protocol37(log, getSelf());
 		log.trace(getSelf().path().name()+" Starting IPS_LINK ACTOR");

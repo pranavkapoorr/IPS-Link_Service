@@ -148,8 +148,12 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(ReceiveTimeout.class, r -> {
 					if(!ipsTerminated){
 						log.debug(getSelf().path().name()+" TIMEOUT.....!!");
-						SharedResources.sendNack(log,getSelf(),"09","Timeout..!!", false);
-						IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
+						if(Link.receiptGenerated){
+						    Link.cardRemoved = true;
+	                       }else{
+	                           SharedResources.sendNack(log,getSelf(),"09","Timeout..!!", false);
+	                           IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
+	                       }
 					}
 					log.trace(getSelf().path().name()+" turning off TIMER");
 					getContext().setReceiveTimeout(Duration.Undefined());

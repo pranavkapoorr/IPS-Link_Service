@@ -62,6 +62,8 @@ public class ReceiptGenerator extends AbstractActor{
 						receipt_Json.setReceipt(receipt.toString());
 						/**sends out the receipt if printOnECR is enabled ie no S message will be expected but U message will be if GT bit is on**/
 						if(printOnECR ){
+						    log.info(getSelf().path().name()+" Receipt Generated");
+						    Link.receiptGenerated = true;
 						    getSelf().tell(receipt_Json, getSelf());
 						}
 					}
