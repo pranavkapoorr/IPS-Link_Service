@@ -40,38 +40,30 @@ public class SharedResources {
     public static synchronized boolean isValidatedIPSreq(Logger log, ActorRef connHandler, HashMap<String, String> resourceMap){
         boolean result = false;
         /** !=null checks that if the particular fields were in json string received Not their values!!**/
-        if(resourceMap.get("pedIp")!= null && resourceMap.get("pedPort")!= null && resourceMap.get("printFlag")!= null && resourceMap.get("operationType")!= null && resourceMap.get("pedIp")!= "" && resourceMap.get("pedPort")!= "" && resourceMap.get("printFlag")!= "" && resourceMap.get("operationType")!= ""){
+        if(resourceMap.get("pedIp")!= null && resourceMap.get("pedPort")!= null  && resourceMap.get("operationType")!= null && resourceMap.get("pedIp")!= "" && resourceMap.get("pedPort")!= "" && resourceMap.get("operationType")!= ""){
             log.trace(connHandler.path().name()+" VALIDATION PASSED------> 1");
-            if((resourceMap.get("operationType").equals("Payment")||resourceMap.get("operationType").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" /* && resourceMap.get("GTbit")!= null  && resourceMap.get("GTbit")!= "" */&& resourceMap.get("transactionReference")!= null)){
-                log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
-                if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
-                    log.trace(connHandler.path().name()+" VALIDATION PASSED------> 3");
-                    result = true;
-                }
-            }else if(resourceMap.get("operationType").equals("Reversal") /*&& resourceMap.get("GTbit")!= null && resourceMap.get("GTbit")!= ""*/ && resourceMap.get("transactionReference")!= null){
-                if(/*(resourceMap.get("GTbit").equals("0")||resourceMap.get("GTbit").equals("1")) &&*/ (resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1"))){
+                if((resourceMap.get("operationType").equals("Payment")||resourceMap.get("operationType").equals("Refund")) && (resourceMap.get("amount")!= null && resourceMap.get("amount")!= "" && resourceMap.get("transactionReference")!= null)){
                     log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
+                    if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1") && (resourceMap.get("printFlag")!= null  && resourceMap.get("printFlag")!= "")){
+                        log.trace(connHandler.path().name()+" VALIDATION PASSED------> 3");
+                        result = true;
+                    }
+                }else if(resourceMap.get("operationType").equals("Reversal") && resourceMap.get("transactionReference")!= null){
+                    if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")&&(resourceMap.get("printFlag")!= null  && resourceMap.get("printFlag")!= "")){
+                        log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
+                        result = true;
+                    }
+                }else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("EndOfDay")||resourceMap.get("operationType").equals("PedBalance")){
+                    if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1") && (resourceMap.get("printFlag")!= null  && resourceMap.get("printFlag")!= "")){
+                        log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
+                        result = true;
+                    }
                 }
-            }else if(resourceMap.get("operationType").equals("FirstDll")||resourceMap.get("operationType").equals("UpdateDll")||resourceMap.get("operationType").equals("EndOfDay")||resourceMap.get("operationType").equals("PedBalance")){
-                if(resourceMap.get("printFlag").equals("0")||resourceMap.get("printFlag").equals("1")){
-                    log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
-                }
-            }
-            else if(resourceMap.get("operationType").equals("ProbePed")){
-                if(resourceMap.get("printFlag").equals("0")){
-                    log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
-                }
-            }
-            else if(resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("PedStatus")){
-                if(resourceMap.get("printFlag").equals("1")){
-                    log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
-                    result = true;
-                }
-            }
-        }
+                else if(resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("PedStatus")||resourceMap.get("operationType").equals("ProbePed")){
+                        log.trace(connHandler.path().name()+" VALIDATION PASSED------> 2");
+                        result = true;
+                   }
+       }
         return result;
     }
     /**tcphandler**/

@@ -83,13 +83,16 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 											statusMessageAddress = null;
 										}
 										boolean printOnECR = false;
-	
-										/**turns printOnEcr true if prinflag received is 1 or its R req **/
-										if(resourceMap.get("printFlag").equals("1")||resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("LastTransactionStatus")){
-											printOnECR = true;
-										}/*else if(resourceMap.get("messageCode").equals("ProbePed")){
-										    printOnECR = false;
-										}*/
+										/**probe ped doesnt need printon ecr to be true**/
+										if(resourceMap.get("operationType").equals("ProbePed")){
+                                            printOnECR = false;
+                                        }else if(resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("PedStatus")){
+                                            printOnECR = true;
+                                        }   
+										/**turns printOnEcr true if prinflag received is 1(for dll,x-zreports and payments) or its R req or lasttrans or pedstatus**/
+										else if(resourceMap.get("printFlag").equals("1")){
+										    printOnECR = true;
+										} 
 										int timeout = 95;//default timeout
 										if(resourceMap.get("timeOut")!=null && resourceMap.get("timeOut").matches("[0-9]*")
 												){
