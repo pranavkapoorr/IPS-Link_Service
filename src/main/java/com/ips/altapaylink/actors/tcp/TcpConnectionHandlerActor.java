@@ -82,28 +82,36 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										}else{
 											statusMessageAddress = null;
 										}
-										boolean printOnECR = false;
-										/**probe ped doesnt need printon ecr to be true**/
-										if(resourceMap.get("operationType").equals("ProbePed")){
-                                            printOnECR = false;
-                                        }else if(resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("PedStatus")){
-                                            printOnECR = true;
-                                        }   
-										/**turns printOnEcr true if prinflag received is 1(for dll,x-zreports and payments) or its R req or lasttrans or pedstatus**/
-										else if(resourceMap.get("printFlag").equals("1")){
-										    printOnECR = true;
-										} 
-										int timeout = 95;//default timeout
-										if(resourceMap.get("timeOut")!=null && resourceMap.get("timeOut").matches("[0-9]*")
-												){
-											timeout = Integer.parseInt(resourceMap.get("timeOut"));
+										/**checks if wait4cardremoved is used with printing on ped which is not feasible as this function is exclusively for printing on epos**/
+										if(resourceMap.get("printFlag").equals("0") && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+										    SharedResources.sendNack(log,getSelf(),"10","wait4CardRemoved only works when printing on ECR..!",false);
+										}else{
+										    boolean printOnECR = false;
+	                                        /**probe ped doesnt need printon ecr to be true**/
+	                                        if(resourceMap.get("operationType").equals("ProbePed")){
+	                                            printOnECR = false;
+	                                        }else if(resourceMap.get("operationType").equals("ReprintReceipt")||resourceMap.get("operationType").equals("LastTransactionStatus")||resourceMap.get("operationType").equals("PedStatus")){
+	                                            printOnECR = true;
+	                                        }   
+	                                        /**turns printOnEcr true if prinflag received is 1(for dll,x-zreports and payments) or its R req or lasttrans or pedstatus**/
+	                                        else if(resourceMap.get("printFlag").equals("1")){
+	                                            printOnECR = true;
+	                                        } 
+	                                        int timeout = 95;//default timeout
+	                                        if(resourceMap.get("timeOut")!=null && resourceMap.get("timeOut").matches("[0-9]*")
+	                                                ){
+	                                            timeout = Integer.parseInt(resourceMap.get("timeOut"));
+	                                        }
+	                                        IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR,clientIP , languageDictionary),"IPS-"+clientIP);
+	                                        context().watch(IPS);
+	                                        ipsTerminated = false;
+	                                        IPS.tell(resourceMap, getSelf());
+	                                        getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
+	                                        log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
+										    
 										}
-										IPS = getContext().actorOf(Link.props(statusMessageAddress, terminalAddress, printOnECR,clientIP , languageDictionary),"IPS-"+clientIP);
-										context().watch(IPS);
-										ipsTerminated = false;
-										IPS.tell(resourceMap, getSelf());
-										getContext().setReceiveTimeout(Duration.create(timeout, TimeUnit.SECONDS));//setting receive timeout
-										log.debug(getSelf().path().name()+" SETTING RECEIVE TIMEOUT OF {} SEC",timeout);
+										
+										
 									}else{
 									    SharedResources.sendNack(log,getSelf(),"06","WRONG PED IP OR PORT..!",true);
 									}
