@@ -82,8 +82,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 										}else{
 											statusMessageAddress = null;
 										}
-										/**checks if wait4cardremoved is used with printing on ped which is not feasible as this function is exclusively for printing on epos**/
-										if(resourceMap.get("printFlag").equals("0") && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
+										/**checks if wait4cardremoved is used with printing on ped which is not feasible as this function is exclusively for printing on Epos**/
+										if(resourceMap.get("printFlag") != null && resourceMap.get("wait4CardRemoved") != null && resourceMap.get("printFlag").equals("0") && resourceMap.get("wait4CardRemoved").equalsIgnoreCase("true")){
 										    SharedResources.sendNack(log,getSelf(),"10","wait4CardRemoved only works when printing on ECR..!",false);
 										}else{
 										    boolean printOnECR = false;
