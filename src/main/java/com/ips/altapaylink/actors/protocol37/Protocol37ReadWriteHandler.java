@@ -17,10 +17,12 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 	private int CYCLE=1;
 	private boolean enableSSL = true;
 	private Protocol37ReadWrite p37resources;
-	public static Props props(ActorRef statusMessageListener, ActorRef receiptGenerator){
-		return Props.create(Protocol37ReadWriteHandler.class , statusMessageListener, receiptGenerator);
+	private final String clientIp;
+	public static Props props(ActorRef statusMessageListener, ActorRef receiptGenerator, String clientIp){
+		return Props.create(Protocol37ReadWriteHandler.class , statusMessageListener, receiptGenerator, clientIp);
 	}
-	public Protocol37ReadWriteHandler(ActorRef statusMessageListener, ActorRef receiptGenerator) {
+	public Protocol37ReadWriteHandler(ActorRef statusMessageListener, ActorRef receiptGenerator, String clientIp) {
+		this.clientIp = clientIp;
 		this.receiptGenerator = receiptGenerator;
 		this.statusMessageSender = statusMessageListener;
 
@@ -54,7 +56,8 @@ public class Protocol37ReadWriteHandler extends AbstractActor{
 					else if(p37resources.isProtocol37ApplicationMessage(log, getSelf(), msg)){ //if receipt message
 						/** every STX ETX message received and sent requires ACK or Nack from the counter party so that Next Message can be sent 
 						 * getsender() is the Serial Manager Actor who sends message to this Actor so Ack message is sent back to it**/
-						getSender().tell(new Protocol37Format(Protocol37UnformattedMessage.ACK()),getSelf());
+						ActorRef communicationActor = getContext().actorSelection("../TcpClient-"+clientIp).anchor(); 
+						communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.ACK()),getSelf());
 						String message = msg.substring(msg.indexOf((char)02)+1,msg.indexOf((char)03));
 						log.info(getSelf().path().name()+" Result: " + message);
 

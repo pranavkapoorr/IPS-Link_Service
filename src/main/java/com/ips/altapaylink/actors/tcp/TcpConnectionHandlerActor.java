@@ -20,6 +20,7 @@ import com.ips.altapaylink.resources.SharedResources;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.Kill;
 import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.actor.ReceiveTimeout;
@@ -137,7 +138,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(FinalReceipt.class, receipt->{
 					log.info(getSelf().path().name()+" sending out FINAL RECEIPT to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(receipt.getReceipt())), getSelf());
-					context().system().stop(IPS);
+					IPS.tell(Kill.getInstance(), sender);
+					//context().system().stop(IPS);
 				}).match(StatusMessage.class, statusMessage->{
 					log.info(getSelf().path().name()+" sending out statusMessage to "+clientIP.toString());
 					sender.tell(TcpMessage.write(ByteString.fromString(statusMessage.getStatusMessage())), getSelf());

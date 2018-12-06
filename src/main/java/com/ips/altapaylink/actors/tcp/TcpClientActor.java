@@ -26,18 +26,21 @@ public class TcpClientActor extends AbstractActor {
     private boolean sentApplicationMessage = false;
     private int retryCycle = 0;
     private int gtMessageRetryCycle = 0;
+    private final String clientIp;
  
-    public static Props props(ActorRef statusMessageListener, ActorRef receiptGenerator, InetSocketAddress remote , String clientIp) {
-        return Props.create(TcpClientActor.class, statusMessageListener, receiptGenerator, remote, clientIp);
+    public static Props props(InetSocketAddress remote , String clientIp) {
+        return Props.create(TcpClientActor.class, remote, clientIp);
     }
 
-    private TcpClientActor(ActorRef statusMessageListener, ActorRef receiptGenerator, InetSocketAddress terminalIPandPort, String clientIp) {
+    private TcpClientActor(InetSocketAddress terminalIPandPort, String clientIp) {
         this.remote = terminalIPandPort;
+        this.clientIp = clientIp;
         this.tcpActor = Tcp.get(getContext().system()).manager();
         	log.trace(getSelf().path().name()+" starting TCP Client");
         	tcpActor.tell(TcpMessage.connect(remote), getSelf());
         	log.info(getSelf().path().name()+" starting handler");
-            this.handler = getContext().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator),"P37Handler-"+clientIp);
+        	//this.handler = getContext().actorSelection(ActorPath.fromString("akka://IPS-SYSTEM/user/SERVER/handler-"+clientIp+"/IPS-"+clientIp+"/p37Handler-"+clientIp)).anchor();
+            //this.handler = getContext().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator),"P37Handler-"+clientIp);
       }
     
     @Override
@@ -136,7 +139,9 @@ public class TcpClientActor extends AbstractActor {
 	            	   else if(msg.data().utf8String().equalsIgnoreCase(Protocol37UnformattedMessage.NACK())){
 	            		   log.info(getSelf().path().name()+" NACK");
 	            	   }
-	            	  handler.tell(msg.data().utf8String(),getSelf());
+	            	   ActorRef lol = getContext().actorFor("../p37Handler-"+clientIp);
+	            	   lol.tell(msg.data().utf8String(),getSelf());
+	            	   //handler.tell(msg.data().utf8String(),getSelf());
 	               }).match(String.class, s->{
 	            	   log.info(getSelf().path().name()+" String: "+s);
 	               }).match(ConnectionClosed.class, closed->{

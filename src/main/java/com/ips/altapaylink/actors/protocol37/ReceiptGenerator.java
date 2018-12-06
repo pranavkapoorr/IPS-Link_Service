@@ -24,13 +24,17 @@ public class ReceiptGenerator extends AbstractActor{
 	private ResponseJson receipt_Json;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
 	private Protocol37Receipt p37receipt;
+	private final long amount;
+	private final boolean wait4CardRemoval;
 	
-	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary){
-		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary);
+	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval){
+		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval);
 	}
-	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary) {
+	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount, boolean wait4CardRemoval) {
 	    this.languageDictionary = languageDictionary;
 		this.printOnECR = printOnECR;
+		this.amount = amount;
+		this.wait4CardRemoval = wait4CardRemoval;
 		this.mapper = new ObjectMapper();
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
 		this.receipt_Json = new ResponseJson();
@@ -83,7 +87,7 @@ public class ReceiptGenerator extends AbstractActor{
                     receipt_Json.setSTAN(STAN);
                     receipt_Json.setActionCode(actionCode);
                     receipt_Json.setProgressiveNumber(progressiveNum);
-                    receipt_Json.setAmount(String.valueOf(Link.amount));
+                    receipt_Json.setAmount(String.valueOf(amount));
 					if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("00")){
 						
 						String cardPan = message.substring(12,31);
@@ -124,7 +128,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String transactionAmount = message.substring(94,106);
 					String transactionCurrencyDecimal = message.substring(106,107);
 					receipt_Json.setTerminalId(terminalId);
-					receipt_Json.setAmount(String.valueOf(Link.amount));
+					receipt_Json.setAmount(String.valueOf(amount));
                     receipt_Json.setAquirerId(aquirerId);
                     receipt_Json.setSTAN(STAN);
                     receipt_Json.setActionCode(actionCode);
@@ -167,7 +171,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String aquirerId = message.substring(40,51);
 					String transTime = message.substring(51,58);
 					receipt_Json.setTerminalId(terminalId);
-					receipt_Json.setAmount(String.valueOf(Link.amount));
+					receipt_Json.setAmount(String.valueOf(amount));
 					receipt_Json.setCardPAN(cardPan);
 					receipt_Json.setTransactionType(transacType);
 					receipt_Json.setAuthCode(authCode);
@@ -304,7 +308,7 @@ public class ReceiptGenerator extends AbstractActor{
 					}
 				
 		}).match(ResponseJson.class, receiptX->{
-		            if(Link.wait4CardRemoval){
+		            if(wait4CardRemoval){
 		                /**it is implemented in @StatusMessageSender.java**/
 		                if(Link.cardRemoved){
 		                    p37receipt.generateJsonReceipt(log,getSelf(),getContext(),mapper,languageDictionary,receiptX);
