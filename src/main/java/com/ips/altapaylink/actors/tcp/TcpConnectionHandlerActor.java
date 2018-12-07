@@ -36,11 +36,11 @@ import scala.concurrent.duration.Duration;
 public class TcpConnectionHandlerActor extends AbstractActor {
 
 	private final static Logger log = LogManager.getLogger(TcpConnectionHandlerActor.class); 
-	private String clientIP;
+	private final String clientIP;
 	private ActorRef sender;
 	private ActorRef IPS;
 	private volatile boolean ipsTerminated;
-	final HashMap<String, ArrayList<String>> languageDictionary;
+	private final HashMap<String, ArrayList<String>> languageDictionary;
 	public TcpConnectionHandlerActor(String clientIP,HashMap<String, ArrayList<String>> languageDictionary) {
 	    this.languageDictionary = languageDictionary;
 		this.clientIP = clientIP;

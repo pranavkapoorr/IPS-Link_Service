@@ -13,16 +13,11 @@ import akka.actor.*;
 
 public class Link extends AbstractActor {
 	private final ActorRef communicationActor;
-	private ActorRef statusMessageListener;
-	private ActorRef receiptGenerator;
 	private final static Logger log = LogManager.getLogger(Link.class);
 	private final boolean printOnECR;
-	public static volatile long amount = 0;
+	private static long amount = 0;
 	public static volatile boolean isAdvance;
-	public static volatile boolean isTerminalStatus;
-	public static volatile boolean isLastTransStatus;
 	public static volatile boolean sendToTerminal;
-	//public static volatile boolean wait4CardRemoval;
 	public static volatile boolean cardRemoved;
 	public static volatile boolean receiptGenerated;
 	private volatile int connectionCycle;
@@ -41,18 +36,13 @@ public class Link extends AbstractActor {
 		this.clientIp = clientIp;
 		this.statusMessageIp = statusMessageIp;
 		this.languageDictionary = languageDictionary;
-		//this.statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp, languageDictionary), "status_message_senderActor-"+clientIp);
-		//ActorRef receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR, languageDictionary),"receipt_Generator_Actor-"+clientIp);
 		this.communicationActor =  getContext().actorOf(TcpClientActor.props(terminalAddress, clientIp),"TcpClient-"+clientIp);
 	}
 
 	@Override
 	public void preStart() throws Exception {
 	    cardRemoved = false;
-	    //wait4CardRemoval = false;
 		isAdvance = false;
-		isTerminalStatus = false;
-		isLastTransStatus = false;
 		sendToTerminal = false;
 		receiptGenerated = false;
 		connectionCycle = 0;
@@ -81,7 +71,7 @@ public class Link extends AbstractActor {
     							    wait4CardRemoval = true;
     							    log.info(getSelf().path().name()+" wait 4 card removed set to true...");
     							}
-    							startStatusReceiptP37Handler(amount, wait4CardRemoval);
+    							startStatusReceiptP37Handler(amount, wait4CardRemoval, false, false);
     							//this.amount = amount;
     								p37.paymentAdvanced(communicationActor,printFlag, amount, resourceMap.get("transactionReference"));
 							}else{
@@ -101,7 +91,7 @@ public class Link extends AbstractActor {
                                     log.info(getSelf().path().name()+" wait 4 card removed set to true...");
                                 }
     							//starting actors with dependencies here
-    							startStatusReceiptP37Handler(amount, wait4CardRemoval);
+    							startStatusReceiptP37Handler(amount, wait4CardRemoval, false, false);
     							//this.amount = amount;
     								p37.refundAdvanced(communicationActor, printFlag, amount, resourceMap.get("transactionReference"));
     							
@@ -119,7 +109,7 @@ public class Link extends AbstractActor {
                                 log.info(getSelf().path().name()+" wait 4 card removed set to true...");
                             }	
 							//starting actors with dependencies here
-							startStatusReceiptP37Handler(amount, wait4CardRemoval);
+							startStatusReceiptP37Handler(amount, wait4CardRemoval, false, false);
 							//this.amount = amount;
 								p37.reversalAdvanced(communicationActor, printFlag,resourceMap.get("transactionReference"));
 						
@@ -127,54 +117,52 @@ public class Link extends AbstractActor {
 							log.info(getSelf().path().name()+" received FIRST DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
 							p37.dllFunctions(communicationActor, printFlag,1);
 	
 						}else if(resourceMap.get("operationType").equals("UpdateDll")){
 							log.info(getSelf().path().name()+" received UPDATE DLL REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
 							p37.dllFunctions(communicationActor, printFlag,0);
 	
 						}else if(resourceMap.get("operationType").equals("PedBalance")){
 							log.info(getSelf().path().name()+" received PedBalance or X-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
 							p37.Report(communicationActor, printFlag,0);
 	
 						}else if(resourceMap.get("operationType").equals("EndOfDay")){
 							log.info(getSelf().path().name()+" received EndOfDay or Z-report REQUEST");
 							int printFlag = Integer.parseInt((String) resourceMap.get("printFlag"));
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
 							p37.Report(communicationActor, printFlag, 1);
 						}else if(resourceMap.get("operationType").equals("PedStatus")){
-							isTerminalStatus =  true;
 							log.info(getSelf().path().name()+" received Ped-STATUS REQUEST");
 							int printFlag = 1;//print on ECR always to avoid xreport receipt on ped
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, true);
 							p37.getTerminalStatus(communicationActor, printFlag);
 	
 						}else if(resourceMap.get("operationType").equals("ReprintReceipt")){
 							log.info(getSelf().path().name()+" received REPRINT TICKET REQUEST");
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
 							p37.reprintTicket(communicationActor);
 	
 						}else if(resourceMap.get("operationType").equals("LastTransactionStatus")){
-							isLastTransStatus = true;
 							log.info(getSelf().path().name()+" received LAST TRANSACTION STATUS REQUEST");
 							//no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, true, false);
 							p37.reprintTicket(communicationActor);
 							
 						}else if(resourceMap.get("operationType").equals("ProbePed")){
                             log.info(getSelf().path().name()+" received  ProbePed REQUEST");
                           //no card required so wait4CardRemoval false
-							startStatusReceiptP37Handler(amount, false);
+							startStatusReceiptP37Handler(amount, false, false, false);
                             p37.probePed(communicationActor);
                             
                         }
@@ -203,10 +191,10 @@ public class Link extends AbstractActor {
 				}).build();
 	}
 	
-	private void startStatusReceiptP37Handler(long amount, boolean wait4CardRemoval){
+	private void startStatusReceiptP37Handler(long amount, boolean wait4CardRemoval,boolean isLastTransStatus, boolean isTerminalStatus){
 		//starting actors with dependencies here
-		this.statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp, languageDictionary,wait4CardRemoval), "status_message_senderActor-"+clientIp);
-		this.receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR, languageDictionary,amount,wait4CardRemoval),"receipt_Generator_Actor-"+clientIp);
+		ActorRef statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp, languageDictionary,wait4CardRemoval), "status_message_senderActor-"+clientIp);
+		ActorRef receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR, languageDictionary,amount,wait4CardRemoval, isLastTransStatus, isTerminalStatus),"receipt_Generator_Actor-"+clientIp);
 		context().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator,clientIp),"p37Handler-"+clientIp);
 	}
 	@Override

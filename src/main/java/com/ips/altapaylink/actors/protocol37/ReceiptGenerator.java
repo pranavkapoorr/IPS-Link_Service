@@ -23,14 +23,15 @@ public class ReceiptGenerator extends AbstractActor{
 	private final boolean  printOnECR;
 	private ResponseJson receipt_Json;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
-	private Protocol37Receipt p37receipt;
+	private final Protocol37Receipt p37receipt;
 	private final long amount;
 	private final boolean wait4CardRemoval;
+	private final boolean isTerminalStatus;
 	
-	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval){
-		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval);
+	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval, boolean isLastTransStatus,boolean isTerminalStatus){
+		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval, isLastTransStatus, isTerminalStatus);
 	}
-	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount, boolean wait4CardRemoval) {
+	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount, boolean wait4CardRemoval,boolean isLastTransStatus,boolean isTerminalStatus) {
 	    this.languageDictionary = languageDictionary;
 		this.printOnECR = printOnECR;
 		this.amount = amount;
@@ -38,11 +39,12 @@ public class ReceiptGenerator extends AbstractActor{
 		this.mapper = new ObjectMapper();
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
 		this.receipt_Json = new ResponseJson();
+		this.isTerminalStatus = isTerminalStatus;
+	    this.p37receipt = new Protocol37Receipt(isLastTransStatus);
 	}
 	
 	@Override
 	public void preStart() throws Exception {
-	    this.p37receipt = new Protocol37Receipt();
 	    log.info(getSelf().path().name()+" starting Receipt Generator");
 	}
 	
@@ -196,7 +198,7 @@ public class ReceiptGenerator extends AbstractActor{
 					String totalInEur = message.substring(12,28);
 					String actionCode = message.substring(28,31);
 					if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("00")){
-						if(Link.isTerminalStatus){
+						if(isTerminalStatus){
 						    receipt_Json.setPedConnectivity("OK");
 						    receipt_Json.setGatewayConnectivity("OK");
 						}else{
@@ -207,7 +209,7 @@ public class ReceiptGenerator extends AbstractActor{
 							receipt_Json.setActionCode(actionCode);
 						}
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("01")){
-					    if(Link.isTerminalStatus){
+					    if(isTerminalStatus){
                             receipt_Json.setPedConnectivity("OK");
                             receipt_Json.setGatewayConnectivity("KO");
                         }else{
@@ -218,7 +220,7 @@ public class ReceiptGenerator extends AbstractActor{
                             receipt_Json.setActionCode(actionCode);
                         }
 					}else if(message.substring(message.indexOf('T')+1, message.indexOf('T')+3).equalsIgnoreCase("09")){
-					    if(Link.isTerminalStatus){
+					    if(isTerminalStatus){
                             receipt_Json.setPedConnectivity("OK");
                             receipt_Json.setGatewayConnectivity("KO");
                         }else{
@@ -303,7 +305,7 @@ public class ReceiptGenerator extends AbstractActor{
 					}
 				}
 				
-					if((!printOnECR || Link.isTerminalStatus) && !Link.isAdvance){
+					if((!printOnECR || isTerminalStatus) && !Link.isAdvance){
 					    getSelf().tell(receipt_Json, getSelf());
 					}
 				
@@ -326,7 +328,6 @@ public class ReceiptGenerator extends AbstractActor{
 	
 	@Override
 	public void postStop() throws Exception {
-	    this.p37receipt = null;
 		log.info(getSelf().path().name()+" stopping Receipt Generator");
 	}
 }
