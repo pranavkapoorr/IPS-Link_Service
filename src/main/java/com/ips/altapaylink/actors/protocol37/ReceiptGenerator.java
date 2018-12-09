@@ -16,10 +16,10 @@ import akka.actor.Props;
 
 public class ReceiptGenerator extends AbstractActor{
 	private final static Logger log = LogManager.getLogger(ReceiptGenerator.class);
-	private StringBuffer receiptBuffer = new StringBuffer();
-	StringBuilder receipt = new StringBuilder();
+	private final StringBuffer receiptBuffer = new StringBuffer();
+	private final StringBuilder receipt = new StringBuilder();
 	private final ObjectMapper mapper;
-	private static char newLine = (char)10;
+	private final static char newLine = (char)10;
 	private final boolean  printOnECR;
 	private ResponseJson receipt_Json;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
@@ -27,14 +27,16 @@ public class ReceiptGenerator extends AbstractActor{
 	private final long amount;
 	private final boolean wait4CardRemoval;
 	private final boolean isTerminalStatus;
+	private final boolean isAdvance;
 	
-	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval, boolean isLastTransStatus,boolean isTerminalStatus){
-		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval, isLastTransStatus, isTerminalStatus);
+	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval, boolean isLastTransStatus,boolean isTerminalStatus, boolean isAdvance){
+		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval, isLastTransStatus, isTerminalStatus, isAdvance);
 	}
-	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount, boolean wait4CardRemoval,boolean isLastTransStatus,boolean isTerminalStatus) {
+	private ReceiptGenerator(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount, boolean wait4CardRemoval,boolean isLastTransStatus,boolean isTerminalStatus, boolean isAdvance) {
 	    this.languageDictionary = languageDictionary;
 		this.printOnECR = printOnECR;
 		this.amount = amount;
+		this.isAdvance = isAdvance;
 		this.wait4CardRemoval = wait4CardRemoval;
 		this.mapper = new ObjectMapper();
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
@@ -59,7 +61,6 @@ public class ReceiptGenerator extends AbstractActor{
 					/**checks if this is the last cycle of receipt depending on the delimiter**/
 					if(message.charAt(message.length()-1) == (char)27){//last cycle
 						String tempReceipt =  receiptBuffer.toString().replace(String.valueOf((char)127), "").replaceAll("}", "").replace(String.valueOf((char)27), "");
-						receiptBuffer = null;
 						receipt.append(tempReceipt);
 						/**formatting receipt adding "/n" **/
 						for(int i = 24; i< receipt.length(); i+=25){
@@ -105,12 +106,10 @@ public class ReceiptGenerator extends AbstractActor{
 		                receipt_Json.setTransactionTime(p37receipt.getCurrentTime());
 				}
 					else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("01")){
-					    Link.isAdvance = false;
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
 						receipt_Json.setTransactionStatusText(reason4Failure);
 					}else if(message.substring(message.indexOf('E')+1, message.indexOf('E')+3).equalsIgnoreCase("09")){
-					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("***unexpected***");
 					}	
@@ -154,12 +153,10 @@ public class ReceiptGenerator extends AbstractActor{
                         receipt_Json.setTransactionDate(p37receipt.getCurrentDate());
                         receipt_Json.setTransactionTime(p37receipt.getCurrentTime());
 					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("01")){
-					    Link.isAdvance = false;
 						String reason4Failure = message.substring(12,36);
 						receipt_Json.setTransactionStatus("KO");
 						receipt_Json.setTransactionStatusText(reason4Failure);
 					}else if(message.substring(message.indexOf('V')+1, message.indexOf('V')+3).equalsIgnoreCase("09")){
-					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					}	
@@ -184,10 +181,8 @@ public class ReceiptGenerator extends AbstractActor{
 					    receipt_Json.setTransactionDate(p37receipt.getCurrentDate());
 	                    receipt_Json.setTransactionTime(p37receipt.getCurrentTime());
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("01")){
-					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					}else if(message.substring(message.indexOf('A')+1, message.indexOf('A')+3).equalsIgnoreCase("09")){
-					    Link.isAdvance = false;
 					    receipt_Json.setTransactionStatus("KO");
 					    receipt_Json.setTransactionStatusText("**UNEXPECTED TAG**");
 					}	
@@ -300,12 +295,12 @@ public class ReceiptGenerator extends AbstractActor{
 					}
 					    }
 	
-					if(!printOnECR  && Link.isAdvance){
+					if(!printOnECR  && isAdvance){
 					    getSelf().tell(receipt_Json, getSelf());
 					}
 				}
 				
-					if((!printOnECR || isTerminalStatus) && !Link.isAdvance){
+					if((!printOnECR || isTerminalStatus) && !isAdvance){
 					    getSelf().tell(receipt_Json, getSelf());
 					}
 				

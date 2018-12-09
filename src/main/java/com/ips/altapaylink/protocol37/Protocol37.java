@@ -115,7 +115,6 @@ public class Protocol37 {
         communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.posInfo()), ActorRef.noSender());
     }
     public void additionalDataGT(ActorRef communicationActor,String additionalData4GT) {
-        Link.isAdvance =  true;
         log.info(self.path().name()+" ADVANCED");
         communicationActor.tell(new Protocol37Format(Protocol37UnformattedMessage.additionalDataGT(additionalData4GT)), ActorRef.noSender());
     }
