@@ -1,18 +1,14 @@
 package com.ips.altapaylink.actors.protocol37;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ips.altapaylink.actors.convertor.Link;
+import com.ips.altapaylink.actormessages.*;
 import com.ips.altapaylink.marshallers.ResponseJson;
 import com.ips.altapaylink.protocol37.Protocol37Receipt;
-
-import akka.actor.AbstractActor;
-import akka.actor.Props;
+import akka.actor.*;
 
 public class ReceiptGenerator extends AbstractActor{
 	private final static Logger log = LogManager.getLogger(ReceiptGenerator.class);
@@ -21,13 +17,14 @@ public class ReceiptGenerator extends AbstractActor{
 	private final ObjectMapper mapper;
 	private final static char newLine = (char)10;
 	private final boolean  printOnECR;
-	private ResponseJson receipt_Json;
+	private final ResponseJson receipt_Json;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
 	private final Protocol37Receipt p37receipt;
 	private final long amount;
 	private final boolean wait4CardRemoval;
 	private final boolean isTerminalStatus;
 	private final boolean isAdvance;
+	private boolean cardRemoved;
 	
 	public static Props props(boolean printOnECR,HashMap<String, ArrayList<String>> languageDictionary, long amount,boolean wait4CardRemoval, boolean isLastTransStatus,boolean isTerminalStatus, boolean isAdvance){
 		return Props.create(ReceiptGenerator.class , printOnECR, languageDictionary, amount, wait4CardRemoval, isLastTransStatus, isTerminalStatus, isAdvance);
@@ -70,7 +67,7 @@ public class ReceiptGenerator extends AbstractActor{
 						/**sends out the receipt if printOnECR is enabled ie no S message will be expected but U message will be if GT bit is on**/
 						if(printOnECR ){
 						    log.info(getSelf().path().name()+" Receipt Generated");
-						    Link.receiptGenerated = true;
+						    getContext().getParent().tell(new ReceiptGenerated(true), getSelf());//telling parent that receipt generated
 						    getSelf().tell(receipt_Json, getSelf());
 						}
 					}
@@ -307,7 +304,7 @@ public class ReceiptGenerator extends AbstractActor{
 		}).match(ResponseJson.class, receiptX->{
 		            if(wait4CardRemoval){
 		                /**it is implemented in @StatusMessageSender.java**/
-		                if(Link.cardRemoved){
+		                if(this.cardRemoved){
 		                    p37receipt.generateJsonReceipt(log,getSelf(),getContext(),mapper,languageDictionary,receiptX);
 		                }else{
 		                    TimeUnit.NANOSECONDS.sleep(1);
@@ -316,7 +313,8 @@ public class ReceiptGenerator extends AbstractActor{
 		            }else{
 		                p37receipt.generateJsonReceipt(log,getSelf(),getContext(),mapper,languageDictionary,receiptX);
 		            }
-		        })
+		})
+		.match(CardRemoved.class,cR -> this.cardRemoved = cR.cardRemoved())
 		 .build();
 	}
 	

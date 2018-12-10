@@ -2,15 +2,9 @@ package com.ips.altapaylink.actors.tcp;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.*;
-
-import com.ips.altapaylink.actormessages.FailedAttempt;
-import com.ips.altapaylink.actormessages.Protocol37Format;
-import com.ips.altapaylink.actors.convertor.Link;
-import com.ips.altapaylink.actors.protocol37.Protocol37ReadWriteHandler;
+import com.ips.altapaylink.actormessages.*;
 import com.ips.altapaylink.protocol37.Protocol37UnformattedMessage;
-
 import akka.actor.*;
 import akka.io.Tcp;
 import akka.io.Tcp.*;
@@ -20,7 +14,6 @@ import akka.util.ByteString;
 public class TcpClientActor extends AbstractActor {
 	private final static Logger log = LogManager.getLogger(TcpClientActor.class);
     private final ActorRef tcpActor;
-    private  ActorRef handler;
     private final InetSocketAddress remote;
     private boolean ackReceived;
     private boolean sentApplicationMessage = false;
@@ -58,7 +51,7 @@ public class TcpClientActor extends AbstractActor {
 					//getContext().stop(getContext().getParent());
 				})
 				.match(Connected.class, conn->{
-					Link.sendToTerminal = true;
+					getContext().getParent().tell(new SendToTerminal(true), getSelf());//ready to send message as connected to terminal
 					log.info(getSelf().path().name()+" connected to ped: "+conn);
 					 ackReceived = true;
 			         log.info(getSelf().path().name()+" ackReceived set to allow first message to be sent through tcp");

@@ -14,10 +14,7 @@ import java.security.*;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import javax.net.ssl.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.typesafe.config.ConfigFactory;
+import org.apache.logging.log4j.*;
 import com.typesafe.sslconfig.akka.AkkaSSLConfig;
 import com.typesafe.sslconfig.ssl.*;
 

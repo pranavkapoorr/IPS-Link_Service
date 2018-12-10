@@ -1,11 +1,8 @@
 package com.ips.altapaylink.resources;
 
 import java.util.HashMap;
-
 import org.apache.logging.log4j.Logger;
-
-import akka.actor.ActorRef;
-import akka.actor.PoisonPill;
+import akka.actor.*;
 
 public class SharedResources {
     

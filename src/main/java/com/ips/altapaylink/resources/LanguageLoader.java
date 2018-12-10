@@ -1,12 +1,7 @@
 package com.ips.altapaylink.resources;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 import org.apache.logging.log4j.Logger;
 
 public class LanguageLoader {
@@ -22,9 +17,6 @@ public class LanguageLoader {
             } catch (IOException e2) {
                 log.trace(e2.getMessage());
             }
-           
-           
-       
         languages.put("Payment",new ArrayList<String>(Arrays.asList(config.getProperty("Payment","PURCHASE").split(";"))));
         languages.put("Refund",new ArrayList<String>(Arrays.asList(config.getProperty("Refund","REFUND").split(";"))));
         languages.put("Reversal",new ArrayList<String>(Arrays.asList(config.getProperty("Reversal","REVERSAL").split(";"))));

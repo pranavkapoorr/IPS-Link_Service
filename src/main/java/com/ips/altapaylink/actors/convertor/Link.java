@@ -16,11 +16,9 @@ public class Link extends AbstractActor {
 	private final static Logger log = LogManager.getLogger(Link.class);
 	private final boolean printOnECR;
 	private static long amount = 0;
-	public static volatile boolean sendToTerminal;
-	public static volatile boolean cardRemoved;
-	public static volatile boolean receiptGenerated;
+	private boolean sendToTerminal;
 	private volatile int connectionCycle;
-	private Protocol37 p37;
+	private final Protocol37 p37;
 	private final InetSocketAddress statusMessageIp;
 	private final String clientIp;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
@@ -35,16 +33,13 @@ public class Link extends AbstractActor {
 		this.clientIp = clientIp;
 		this.statusMessageIp = statusMessageIp;
 		this.languageDictionary = languageDictionary;
+		this.p37 = new Protocol37(log, getSelf());
 		this.communicationActor =  getContext().actorOf(TcpClientActor.props(terminalAddress, clientIp),"TcpClient-"+clientIp);
 	}
 
 	@Override
 	public void preStart() throws Exception {
-	    cardRemoved = false;
-		sendToTerminal = false;
-		receiptGenerated = false;
 		connectionCycle = 0;
-		p37 = new Protocol37(log, getSelf());
 		log.trace(getSelf().path().name()+" Starting IPS_LINK ACTOR");
 	}
 
@@ -185,8 +180,11 @@ public class Link extends AbstractActor {
 				})
 				.match(StatusMessage.class, sM->{
 					context().parent().tell(sM, getSelf());
-					
-				}).build();
+				})
+				.match(ReceiptGenerated.class,rG -> getContext().getParent().forward(rG, getContext()))//forwards status of receipt to parent
+				.match(CardRemoved.class,cR -> getContext().child("receipt_Generator_Actor-"+clientIp).get().forward(cR, getContext()))//forwards cardRemoved signal to Receipt generator
+				.match(SendToTerminal.class, sTT -> this.sendToTerminal = sTT.sendNow())//connected to terminal
+				.build();
 	}
 	
 	private void startStatusReceiptP37Handler(long amount, boolean wait4CardRemoval,boolean isLastTransStatus, boolean isTerminalStatus, boolean isAdvance){
@@ -197,7 +195,6 @@ public class Link extends AbstractActor {
 	}
 	@Override
 	public void postStop() throws Exception {
-	    p37 = null;
 		log.info(getSelf().path().name()+" Stopping IPS_LINK ACTOR");
 	}
 	

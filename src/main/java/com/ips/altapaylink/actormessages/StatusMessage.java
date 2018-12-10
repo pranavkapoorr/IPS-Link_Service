@@ -1,7 +1,7 @@
 package com.ips.altapaylink.actormessages;
 
-final public class StatusMessage {
-		final private String message;
+public class StatusMessage {
+		private final String message;
 		public StatusMessage(String StatusMessage) {
 			this.message = StatusMessage;
 		}

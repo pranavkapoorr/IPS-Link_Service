@@ -1,11 +1,11 @@
 package com.ips.altapaylink.protocol37;
 
 public class Protocol37UnformattedMessage {
-	private final static String terminalIdentification="00000000";
-	private final static char Ack=06;
-	private final static char NAck=21;
-	private final static char z=122;
-	private final static char Etx=03;
+	private final static String terminalIdentification = "00000000";
+	private final static char Ack = 06;
+	private final static char NAck = 21;
+	private final static char z = 122;
+	private final static char Etx = 03;
 	
 	/**PAYMENT
 	 * builds up PAYMENT Message String

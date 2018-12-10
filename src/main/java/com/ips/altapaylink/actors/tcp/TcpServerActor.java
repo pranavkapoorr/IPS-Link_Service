@@ -1,33 +1,24 @@
 package com.ips.altapaylink.actors.tcp;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.*;
+import org.apache.logging.log4j.*;
 
 import com.ips.altapaylink.resources.LanguageLoader;
-
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
+import akka.actor.*;
 import akka.io.TcpMessage;
-import akka.io.Tcp.Bound;
-import akka.io.Tcp.CommandFailed;
-import akka.io.Tcp.Connected;
+import akka.io.Tcp.*;
 
 public class TcpServerActor  extends AbstractActor {
     private final static Logger log = LogManager.getLogger(TcpServerActor.class); 
     private  InetSocketAddress clientIP;
-    public static volatile int clientnum = 0;
     final ActorRef manager;
     final HashMap<String, ArrayList<String>> languageDictionary;
 
     private TcpServerActor(ActorRef manager,InetSocketAddress serverAddress) {
         this.languageDictionary = LanguageLoader.loadLanguages(log);
         this.manager = manager;
-        log.trace("starting TCP Server");
+        log.trace("starting AltaPay-Link Server v1.1");
         manager.tell(TcpMessage.bind(getSelf(),serverAddress,100), getSelf());
     }
 

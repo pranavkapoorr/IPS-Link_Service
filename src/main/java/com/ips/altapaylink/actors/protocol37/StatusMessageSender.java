@@ -1,19 +1,11 @@
 package com.ips.altapaylink.actors.protocol37;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.ips.altapaylink.actormessages.StatusMessage;
-import com.ips.altapaylink.actors.convertor.Link;
+import java.util.*;
+import org.apache.logging.log4j.*;
+import com.ips.altapaylink.actormessages.*;
 import com.ips.altapaylink.actors.tcp.SSLTcpActor;
-
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
+import akka.actor.*;
 import akka.util.ByteString;
 
 public class StatusMessageSender extends AbstractActor {
@@ -54,7 +46,7 @@ public class StatusMessageSender extends AbstractActor {
 					    /**ENGLISH , ITALIAN , FRENCH, SPANISH , DE , DA ,NL , PL**/
 					    removeCardDictionary.forEach(e->{
 					        if(sMsg.contains(e)){
-					            Link.cardRemoved = true;
+					        	getContext().getParent().tell(new CardRemoved(true), getSelf());//sets cardRemoved to true to let the final receipt print at timeout
 	                            log.info(getSelf().path().name()+" card removed......"+e);
 					        }
 					                });

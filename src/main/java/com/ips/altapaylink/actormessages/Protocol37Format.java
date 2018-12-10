@@ -2,7 +2,7 @@ package com.ips.altapaylink.actormessages;
 
 import com.ips.altapaylink.protocol37.Protocol37UnformattedMessage;
 
-final public  class Protocol37Format{
+public class Protocol37Format{
 	private final char Stx=02;
 	private final char Etx=03;
 	private final String message;

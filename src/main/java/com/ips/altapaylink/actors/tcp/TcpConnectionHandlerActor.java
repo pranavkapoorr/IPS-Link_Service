@@ -2,32 +2,17 @@ package com.ips.altapaylink.actors.tcp;
 
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.logging.log4j.*;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ips.altapaylink.actormessages.FailedAttempt;
-import com.ips.altapaylink.actormessages.FinalReceipt;
-import com.ips.altapaylink.actormessages.StatusMessage;
+import com.ips.altapaylink.actormessages.*;
 import com.ips.altapaylink.actors.convertor.Link;
 import com.ips.altapaylink.marshallers.RequestJson;
 import com.ips.altapaylink.resources.SharedResources;
-
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Kill;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.actor.ReceiveTimeout;
-import akka.actor.Terminated;
-import akka.io.Tcp.CommandFailed;
-import akka.io.Tcp.ConnectionClosed;
-import akka.io.Tcp.Received;
+import akka.actor.*;
+import akka.io.Tcp.*;
 import akka.io.TcpMessage;
 import akka.util.ByteString;
 import scala.concurrent.duration.Duration;
@@ -40,6 +25,7 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 	private ActorRef sender;
 	private ActorRef IPS;
 	private volatile boolean ipsTerminated;
+	private boolean receiptGenerated;
 	private final HashMap<String, ArrayList<String>> languageDictionary;
 	public TcpConnectionHandlerActor(String clientIP,HashMap<String, ArrayList<String>> languageDictionary) {
 	    this.languageDictionary = languageDictionary;
@@ -158,8 +144,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(ReceiveTimeout.class, r -> {
 					if(!ipsTerminated){
 						log.debug(getSelf().path().name()+" TIMEOUT.....!!");
-						if(Link.receiptGenerated){
-						    Link.cardRemoved = true;
+						if(this.receiptGenerated){
+						    IPS.tell(new CardRemoved(true), getSelf());//sets cardRemoved to true to let the final receipt print at timeout
 	                       }else{
 	                           SharedResources.sendNack(log,getSelf(),"09","Timeout..!!", false);
 	                           IPS.tell(PoisonPill.getInstance(), sender);//killing ips actor
@@ -179,6 +165,8 @@ public class TcpConnectionHandlerActor extends AbstractActor {
 				.match(Terminated.class,s->{
 					ipsTerminated = s.existenceConfirmed();
 				})
+				//checks if receipt generated
+				.match(ReceiptGenerated.class,rG->this.receiptGenerated = rG.receiptGenerated())
 				.build();
 	}
 
