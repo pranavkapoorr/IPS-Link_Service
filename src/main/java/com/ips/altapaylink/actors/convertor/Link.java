@@ -191,7 +191,7 @@ public class Link extends AbstractActor {
 		//starting actors with dependencies here
 		ActorRef statusMessageListener = context().actorOf(StatusMessageSender.props(statusMessageIp,clientIp, languageDictionary,wait4CardRemoval), "status_message_senderActor-"+clientIp);
 		ActorRef receiptGenerator = context().actorOf(ReceiptGenerator.props(printOnECR, languageDictionary,amount,wait4CardRemoval, isLastTransStatus, isTerminalStatus, isAdvance),"receipt_Generator_Actor-"+clientIp);
-		context().actorOf(Protocol37ReadWriteHandler.props(statusMessageListener, receiptGenerator,clientIp),"p37Handler-"+clientIp);
+		context().actorOf(Protocol37ReadWriteHandler.props(communicationActor, statusMessageListener, receiptGenerator,clientIp),"p37Handler-"+clientIp);
 	}
 	@Override
 	public void postStop() throws Exception {
