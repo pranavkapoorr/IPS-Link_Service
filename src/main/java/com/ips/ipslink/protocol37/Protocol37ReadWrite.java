@@ -54,7 +54,7 @@ public class Protocol37ReadWrite {
                 result = true;
                 log.info(p37handler.path().name()+" Validated -> matched LRC");
             }else{
-                log.error(p37handler.path().name()+" Validation Failed ! -> unexpected LRC");
+                log.trace(p37handler.path().name()+" Validation Failed ! -> unexpected LRC!");
             }
         }
         return result;

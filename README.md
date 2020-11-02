@@ -1,6 +1,6 @@
-# AltaPay-Link_Service
+# IPS-Link_Service
 
-AltaPay-Link-Service is the new service based solution of [International Payment Services Ltd.](http://ips-inter.com) making integration with the Payment device easier.
+IPS-Link-Service is the new service based solution of [RQACS Inc.](https://rqacs.com) making integration with the Payment device easier.
 This solution acts as the "Link" between the EPOS and the Payment Device. This solution runs as tcp service which accepts the various function requests as Json string and generates a Json response with various fields giving information about the transaction made.
 
  It provides various operations that can be done on the payment device using it. Some of the functionalities it provides are:
@@ -28,7 +28,7 @@ things you need to install the software:
 
 ```
 * JDK 8
-* AUTHORISED AltaPay Link License
+* AUTHORISED IPS Link License
 ```
 ### Installing
 
@@ -42,19 +42,24 @@ steps to use it:
 
 ## Deployment
 
-After building the project using [maven](https://maven.apache.org), the jar file generated in target folder should be run using terminal(bash or cmd) with ip_address and port as parameters to bind the AltaPayLink_Service to.
+After building the project using [maven](https://maven.apache.org), the jar file generated in target folder should be run using terminal(bash or cmd) with ip_address and port as parameters to bind the IPSLink_Service to.
 
 ```
 java -jar AltaPayLink_Service.jar 192.168.0.160 40001
 ```
 Here is the epos which connects to their service.
 
-![alt text](https://github.com/pranavkapoorr/AltaPay-Link_Service/blob/complete_refactor/resources/epos_altapay_link.png)
+![alt text](https://github.com/pranavkapoorr/IPS-Link_Service/blob/complete_refactor/resources/epos_ips_link.png)
 
-This product is [Valitor Group](http://www.valitor.com) property. This is the interface to connect to AltaPay Link service.
+This product is [RQACS Inc.](https://www.rqacs.com) property. This is the interface to connect to IPS Link service.
 
-To get the EPOS go here -> [AltaPay_Epos](https://github.com/pranavkapoorr/AltaPay_Link_epos)
+To get the EPOS go here -> [IPS-Link_Epos](https://github.com/pranavkapoorr/IPS_Link_epos)
 
+## Payment Devices Supported
+```
+*Ingenico
+*Pax
+```
 ## Authors
 
 * **Pranav Kapoor** - *Initial work* - [pranavkapoor](https://bitbucket.org/pranavkapoorr_ips)

@@ -115,7 +115,7 @@ public class TcpClientActor extends AbstractActor {
 				        					}else{
 				        						//if ack is not received for previously sent message then wait
 					        					if(retryCycle == 0){//if cycle is 1 then log it (reduces log)
-					        						log.error(getSelf().path().name()+" havent received ack for last msg sent so cannot send: "+msg.getFormattedMessageToSend());
+					        						log.debug(getSelf().path().name()+" havent received ack for last msg sent so cannot send: "+msg.getFormattedMessageToSend());
 					        						log.debug(getSelf().path().name()+" retrying to send same msg");
 					        					}
 					        					else if(retryCycle > 100000000){
