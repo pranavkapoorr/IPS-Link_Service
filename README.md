@@ -45,7 +45,7 @@ steps to use it:
 After building the project using [maven](https://maven.apache.org), the jar file generated in target folder should be run using terminal(bash or cmd) with ip_address and port as parameters to bind the IPSLink_Service to.
 
 ```
-java -jar AltaPayLink_Service.jar 192.168.0.160 40001
+java -jar IPS-Link_Service.jar 192.168.0.160 40001
 ```
 Here is the epos which connects to their service.
 
