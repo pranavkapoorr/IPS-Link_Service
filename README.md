@@ -57,8 +57,8 @@ To get the EPOS go here -> [IPS-Link_Epos](https://github.com/pranavkapoorr/IPS_
 
 ## Payment Devices Supported
 ```
-*Ingenico
-*Pax
+* Ingenico
+* Pax
 ```
 ## Authors
 
